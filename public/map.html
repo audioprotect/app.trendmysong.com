@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive World Map</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: transparent;
+            margin: 0;
+            overflow: hidden;
+        }
+        #map {
+            width: 100vw;
+            height: 100vh;
+            cursor: grab;
+        }
+        .country {
+            stroke: #1a1f1c;
+            stroke-width: 0.5px;
+            transition: fill 0.3s ease;
+        }
+        .country:hover {
+            stroke: #4ade80;
+            stroke-width: 1.5px;
+        }
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            background: #1a1f1c;
+            color: #4ade80;
+            border: 1px solid #4ade80;
+            border-radius: 8px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.15);
+        }
+        .tooltip-country {
+            font-weight: 600;
+            color: #4ade80;
+            margin-bottom: 0.25rem;
+        }
+        .legend-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(26, 31, 28, 0.8);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .legend-color {
+            width: 30px;
+            height: 20px;
+            margin-right: 5px;
+            border: 1px solid #4ade80;
+            border-radius: 4px;
+        }
+        .legend-label {
+            font-size: 0.8rem;
+            color: #4ade80;
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="legend-container" id="legend"></div>
+
+<script>
+    // --- D3 Interactive Map Script ---
+
+    // 1. Setup
+    const mapContainer = document.getElementById('map');
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    let svg;
+
+    // Tooltip
+    const tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip");
+
+    // Projection and Path
+    const projection = d3.geoMercator()
+        .scale(width / 2 / Math.PI)
+        .translate([width / 2, height / 1.5]);
+
+    const path = d3.geoPath().projection(projection);
+
+    // Zoom behavior
+    const zoom = d3.zoom()
+        .scaleExtent([1, 10])
+        .on("zoom", zoomed);
+
+    function createMap() {
+        if (d3.select('#map svg').node()) {
+            d3.select('#map svg').remove();
+        }
+        
+        svg = d3.select("#map").append("svg")
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .call(zoom)
+            .style("background-color", "transparent");
+
+        const g = svg.append("g");
+
+        // 2. Data Loading
+        Promise.all([
+            d3.json("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json"),
+            d3.csv("data:text/csv;base64," + btoa(
+                ""
+            ))
+        ]).then(([worldData, viewData]) => {
+            const countries = topojson.feature(worldData, worldData.objects.countries);
+            const viewDataMap = new Map(viewData.map(d => [d.id, +d.views]));
+            const countryNameMap = new Map(viewData.map(d => [d.id, d.name]));
+
+            // 3. Color Scale
+            const maxViews = d3.max(viewData, d => +d.views);
+            const colorScale = d3.scaleSequential(d3.interpolateGreens)
+                .domain([0, maxViews * 0.7]); 
+
+            // 4. Draw Map
+            g.selectAll("path")
+                .data(countries.features)
+                .enter().append("path")
+                .attr("d", path)
+                .attr("class", "country")
+                .attr("fill", d => {
+                    const views = viewDataMap.get(d.id);
+                    return views ? colorScale(views) : "#4a5568";
+                })
+                .on("mouseover", function(event, d) {
+                    d3.select(this).raise();
+                    tooltip.transition().duration(200).style("opacity", .95);
+                    const views = viewDataMap.get(d.id) || 0;
+                    const countryName = countryNameMap.get(d.id) || d.properties.name;
+                    
+                    tooltip.html(`<div class="tooltip-country">${countryName}</div><div>Views: ${views.toLocaleString()}</div>`)
+                        .style("left", (event.pageX + 15) + "px")
+                        .style("top", (event.pageY - 28) + "px");
+                })
+                .on("mouseout", function() {
+                    tooltip.transition().duration(500).style("opacity", 0);
+                });
+        });
+    }
+
+
+    function zoomed(event) {
+        d3.select('#map g').attr("transform", event.transform);
+    }
+    
+    function createLegend(colorScale, maxViews) {
+        const legendContainer = d3.select("#legend");
+        legendContainer.html(""); 
+        
+        const legendValues = [0, Math.round(maxViews * 0.2), Math.round(maxViews * 0.4), Math.round(maxViews * 0.6), Math.round(maxViews * 0.8), maxViews];
+
+        const lessLabel = legendContainer.append("span");
+        lessLabel.attr("class", "legend-label")
+                 .text("Less Views")
+                 .style("margin-right", "5px");
+
+        legendValues.forEach(value => {
+            const legendColor = legendContainer.append("div");
+            legendColor.attr("class", "legend-color")
+                       .style("background-color", colorScale(value));
+        });
+
+        const moreLabel = legendContainer.append("span");
+        moreLabel.attr("class", "legend-label")
+                 .text("More Views")
+                 .style("margin-right", "0") 
+                 .style("margin-left", "10px");
+    }
+
+    // 5. Responsive Resizing
+    window.addEventListener('resize', () => {
+        const newWidth = window.innerWidth;
+        const newHeight = window.innerHeight;
+        projection.scale(newWidth / 2 / Math.PI)
+                  .translate([newWidth / 2, newHeight / 1.5]);
+        createMap();
+    });
+
+    // Initial map creation
+    createMap();
+</script>
+</body>
+</html>

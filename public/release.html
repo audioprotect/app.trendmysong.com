@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Add Release</title>
+  <link rel="icon" href="data:image/x-icon;base64," />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='lightgreen' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='M16.5 20.93a5 5 0 1 1-.6-9 7 7 0 0 0-13.9.6'/></svg>">
+  <!-- Load fonts asynchronously -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Spline+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css"> <!-- Link to the CSS file -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#111714] text-white min-h-screen flex overflow-x-hidden">
+
+  <!-- Sidebar -->
+  <aside class="w-80 bg-[#111714] p-6 flex flex-col fixed h-screen">
+    <div class="flex items-center gap-3 mb-8">
+      <div
+        aria-label="Music Distribution Co. Logo"
+      ></div>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="lightgreen" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wave-circle-icon lucide-wave-circle"><circle cx="12" cy="12" r="10"/><path d="M16.5 20.93a5 5 0 1 1-.6-9 7 7 0 0 0-13.9.6"/></svg>
+      <h1 class="text-lg font-bold bg-gradient-to-r from-green-400 to-green-200 bg-clip-text text-transparent">Trend My Song</h1>
+    </div>
+    
+    <nav class="flex flex-col gap-2" aria-label="Primary Navigation">
+      <a href="dashboard" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="release" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#29382f] font-medium" aria-current="page">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="lightgreen" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-music4-icon lucide-music-4"><path d="M9 18V5l12-2v13"/><path d="m9 9 12-2"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <span >Add Release</span>
+      </a>
+      <a href="analytics" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-no-axes-combined-icon lucide-chart-no-axes-combined"><path d="M12 16v5"/><path d="M16 14v7"/><path d="M20 10v11"/><path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"/><path d="M4 18v3"/><path d="M8 14v7"/></svg>
+        <span>Analytics</span>
+      </a>
+      <a href="promotion" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rocket-icon lucide-rocket"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+        <span>Promotion</span>
+      </a>
+      <a href="payouts" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-dollar-sign-icon lucide-circle-dollar-sign"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+        <span>Payouts</span>
+      </a>
+      <a href="account" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+        <span>Account</span>
+      </a>
+    </nav>
+
+    <div class="mt-auto">
+      <a href="support" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle-more-icon lucide-message-circle-more"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg>
+        <span>Support Team</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium" onclick="logout()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-power-icon lucide-power"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.77.04"/></svg>
+        <span class="text-red-300">Log Out</span>
+      </a>
+      <div class="border-t border-gray-700 my-2"></div>
+      <div class="flex flex-col items-left gap-1 px-3 py-2 text-sm">
+        <span class="text-gray-500 font-sans">© 2025 All Rights Reserved</span>
+        <span class="text-gray-500 font-sans">Trend My Song</span>
+      </div>
+      <script>
+        function logout() {
+        // Clear the localStorage for both "username" and "key"
+        localStorage.removeItem("username");
+        localStorage.removeItem("key");
+
+        // Redirect to the homepage
+        window.location.href = "/";
+        }
+      </script>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="flex-1 p-8 overflow-auto p-8 ml-80">
+    
+    <div id="embedContainer">
+        <iframe 
+            id="dynamicEmbed" 
+            style="width:100%; height:800px;" 
+            src="" 
+            frameborder="0" 
+            allowfullscreen>
+        </iframe>
+    </div>     
+      <form action="#">
+        <div class="form-input">
+            <button class="search-btn" type="submit"style="display: none;"><i class='bx bx-search'style="display: none;"></i></button>
+        </div>
+    </form>
+  </main>
+
+<script>
+    // Fetch core value and update embed src
+async function fetchCore() {
+    try {
+        const response = await fetch('/current-core');
+        if (!response.ok) throw new Error('Failed to fetch the core value.');
+
+        const data = await response.json();
+        const dynamicEmbed = document.getElementById('dynamicEmbed');
+        if (dynamicEmbed) {
+            // Assuming dynamicEmbed is iframe or embed
+            dynamicEmbed.src = data.core || '';
+        } else {
+            console.warn('Element with id "dynamicEmbed" not found.');
+        }
+    } catch (error) {
+        console.error('Error fetching core value:', error);
+    }
+}
+
+// Fetch summary data and update UI accordingly
+async function fetchSummary() {
+    try {
+        const key = localStorage.getItem('key');
+        if (!key || key === 'null') {
+            console.error('Key not found in localStorage');
+            window.location.href = '/';
+            return;
+        }
+
+        const url = `/get-sheet-summary?key=${encodeURIComponent(key)}&sheetName=portal`;
+        const statusResponse = await fetch(url);
+
+        if (!statusResponse.ok) throw new Error('Failed to fetch summary data.');
+
+        const data = await statusResponse.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+            console.error('No data available for the key');
+            alert('No data available for the specified key');
+            return;
+        }
+
+        const summary = data[0];
+        const accessElement = document.getElementById('access');
+
+        if (accessElement) {
+            accessElement.textContent = summary['Availability'] || 'N/A';
+        } else {
+            console.error('Access element not found');
+        }
+
+        const isAvailabilityExpired = summary['Availability'] === 'Expired';
+        const isLimitExpired = summary['AvailabilityLimit'] === 'Expired';
+
+        if (isAvailabilityExpired || isLimitExpired) {
+            window.location.href = '/denied';
+        }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        alert('Error: Data Fetching (Contact the Support Team)');
+    }
+}
+
+// Run both functions after DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    fetchSummary();
+    fetchCore();
+});
+
+</script>
+<script src="demo-key.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const isMobile = window.innerWidth <= 767;
+    if (isMobile && !window.location.pathname.includes("mobile.html")) {
+      window.location.href = "/mobile.html";
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='lightgreen' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='M16.5 20.93a5 5 0 1 1-.6-9 7 7 0 0 0-13.9.6'/></svg>">
+    <title>Demo Mode | Audio Protect</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid rgba(144, 238, 144, 0.2);
+            border-radius: 16px;
+            padding: 40px 50px;
+            max-width: 1200px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #90ee90, transparent);
+            opacity: 0.6;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .left-section {
+            text-align: left;
+        }
+
+        .icon {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #90ee90, #32cd32);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0a0a0a;
+        }
+
+        .icon svg {
+            width: 35px;
+            height: 35px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #90ee90;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        
+        h2 {
+            font-size: 18px;
+            font-weight: 400;
+            color: #c0c0c0;
+            margin-bottom: 25px;
+            letter-spacing: -0.2px;
+            line-height: 1.4;
+        }
+
+        .message {
+            color: #b0b0b0;
+            line-height: 1.6;
+            margin-bottom: 35px;
+            font-size: 16px;
+        }
+
+        .highlight {
+            color: #90ee90;
+            font-weight: 600;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 16px;
+            font-weight: 400;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #90ee90, #32cd32);
+            color: #0a0a0a;
+            font-size: large;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(144, 238, 144, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #90ee90;
+            border: 2px solid #90ee90;
+            font-size: large;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(144, 238, 144, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(144, 238, 144, 0.1);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .right-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: rgba(144, 238, 144, 0.05);
+            border: 1px solid rgba(144, 238, 144, 0.15);
+            border-radius: 12px;
+            padding: 24px 20px;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            background: rgba(144, 238, 144, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .feature-card h3 {
+            color: #90ee90;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .feature-card p {
+            color: #c0c0c0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 25px;
+            grid-column: 1 / -1;
+        }
+
+        .demo-header h3 {
+            color: #90ee90;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .demo-header p {
+            color: #b0b0b0;
+            font-size: 14px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                text-align: center;
+            }
+
+            .left-section {
+                text-align: center;
+            }
+
+            .right-section {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 30px 25px;
+            }
+
+            .right-section {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 16px;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main-content">
+            <div class="left-section">
+                <div class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="5"/>
+                        <path d="M20 21a8 8 0 0 0-16 0"/>
+                    </svg>
+                </div>
+                
+                <h1>Not a Client Yet?</h1>
+                <h2>No worries! Take a free tour of our dashboard</h2>
+                
+                <div class="message">
+                    We noticed you're not currently signed up, but that's perfectly fine! We'd love to show you around with a <span class="highlight">complete demo experience</span>.
+                    <br><br>
+                    Explore our dashboard, test the interface, and discover all the features we offer. Consider it your personal preview of what's possible when you join us.
+                </div>
+                
+                <div class="buttons">
+                    <a href="/demo/dashboard" class="btn btn-primary">Access Demo Mode</a>
+                    <a href="/pricing" class="btn btn-secondary">Continue to Pricing</a>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <div class="demo-header">
+                    <h3>What You Can Do in Demo Mode</h3>
+                    <p>Explore these features with full interface access</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Dashboard Interface</h3>
+                    <p>Browse the complete dashboard and explore all sections</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Feature Navigation</h3>
+                    <p>Test all menus, tools, and navigation elements</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Sample Data</h3>
+                    <p>View realistic reports and data visualizations</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>User Experience</h3>
+                    <p>Try the interface and see how everything works</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payouts | Trend My Song</title>
+  <link rel="icon" href="data:image/x-icon;base64," />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='lightgreen' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='M16.5 20.93a5 5 0 1 1-.6-9 7 7 0 0 0-13.9.6'/></svg>">
+  <!-- Load fonts asynchronously -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Spline+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#111714] text-white min-h-screen flex overflow-x-hidden">
+
+  <div class="demo-banner">
+<span>This is a Demo Account. To activate your own account, please proceed to checkout</span>
+<a href="/pricing">
+  <button class="demo-button">Get Started</button>
+</a>  </div>
+  
+  <style>
+    body {
+      margin-top: 48px; /* Adjust to match the banner height */
+    }
+  
+    .demo-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(to right, #a8e6a3, #d2f5c7);
+      color: #003c12;
+      padding: 10px 20px;
+      font-family: "Segoe UI", Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      z-index: 1000;
+      font-size: 15px;
+      animation: fadeInSlideDown 0.4s ease-out;
+      flex-wrap: wrap;
+      text-align: center;
+      font-weight: 600;
+    }
+  
+    .demo-button {
+      background-color: #2ecc71;
+      color: rgb(1, 53, 21);
+      border: none;
+      padding: 3px 6px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background-color 0.2s ease;
+    }
+  
+    .demo-button:hover {
+      background-color: #27ae60;
+    }
+  
+    @keyframes fadeInSlideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  
+    @media (max-width: 480px) {
+      .demo-banner {
+        flex-direction: column;
+        padding: 12px 16px;
+      }
+  
+      .demo-button {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+
+  <!-- Sidebar -->
+  <aside class="w-80 bg-[#111714] p-6 flex flex-col fixed h-screen z-10">
+    <!-- Logo Section -->
+    <div class="flex items-center gap-3 mb-8">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="lightgreen" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wave-circle">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M16.5 20.93a5 5 0 1 1-.6-9 7 7 0 0 0-13.9.6"/>
+      </svg>
+      <h1 class="text-lg font-bold bg-gradient-to-r from-green-400 to-green-200 bg-clip-text text-transparent">Trend My Song</h1>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="flex flex-col gap-2" aria-label="Primary Navigation">
+      <a href="dashboard" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard">
+          <rect width="7" height="9" x="3" y="3" rx="1"/>
+          <rect width="7" height="5" x="14" y="3" rx="1"/>
+          <rect width="7" height="9" x="14" y="12" rx="1"/>
+          <rect width="7" height="5" x="3" y="16" rx="1"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+      
+      <a href="release" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-music-4">
+          <path d="M9 18V5l12-2v13"/>
+          <path d="m9 9 12-2"/>
+          <circle cx="6" cy="18" r="3"/>
+          <circle cx="18" cy="16" r="3"/>
+        </svg>
+        <span>Add Release</span>
+      </a>
+      
+      <a href="analytics" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-no-axes-combined">
+          <path d="M12 16v5"/>
+          <path d="M16 14v7"/>
+          <path d="M20 10v11"/>
+          <path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"/>
+          <path d="M4 18v3"/>
+          <path d="M8 14v7"/>
+        </svg>
+        <span>Analytics</span>
+      </a>
+      
+      <a href="promotion" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rocket">
+          <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+          <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+          <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+          <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+        </svg>
+        <span>Promotion</span>
+      </a>
+      
+      <a href="payouts" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#29382f] font-medium transition-colors" aria-current="page">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="lightgreen" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-dollar-sign">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/>
+          <path d="M12 18V6"/>
+        </svg>
+        <span>Payouts</span>
+      </a>
+      
+      <a href="account" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round">
+          <circle cx="12" cy="8" r="5"/>
+          <path d="M20 21a8 8 0 0 0-16 0"/>
+        </svg>
+        <span>Account</span>
+      </a>
+    </nav>
+    <div class="mt-auto">
+        <a href="support" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle-more-icon lucide-message-circle-more"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg>
+          <span>Support Team</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium" onclick="logout()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-power-icon lucide-power"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.77.04"/></svg>
+          <span class="text-red-300">Log Out</span>
+        </a>
+        <div class="border-t border-gray-700 my-2"></div>
+        <div class="flex flex-col items-left gap-1 px-3 py-2 text-sm">
+        <span class="text-gray-500 font-sans">&nbsp;</span>
+        <span class="text-gray-500 font-sans">&nbsp;</span>
+        </div>
+        <script>
+          function logout() {
+          // Clear the localStorage for both "username" and "key"
+          localStorage.removeItem("username");
+          localStorage.removeItem("key");
+  
+          // Redirect to the homepage
+          window.location.href = "/";
+          }
+        </script>
+      </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8 overflow-auto ml-80">
+    <h2 class="text-2xl font-bold mb-6">Payouts</h2>        
+        <!-- Left Column: Balance and History -->
+        <div class="xl:col-span-3 space-y-8">
+          
+          <!-- Balance Card -->
+          <div class="bg-gradient-to-br from-green-900/40 via-[#1c2722] to-[#121a18] rounded-2xl shadow-2xl p-6 sm:p-8 border border-green-900/30">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <p class="text-sm text-gray-400 uppercase tracking-wider font-medium">Available Balance</p>
+                <p id="balance" class="text-4xl sm:text-5xl font-extrabold text-white mt-2">$0.00</p>
+              </div>
+              <div class="flex items-center gap-4">
+                <div class="p-4 bg-green-500/20 rounded-xl">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                  </svg>
+                </div>
+                <button 
+                  id="requestPayoutBtn"
+                  class="bg-green-500/20 hover:bg-green-500/20 text-green-300 font-bold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  <span class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17,8 12,3 7,8"/>
+                      <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                 Request Payout
+                  </span>
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 text-sm text-gray-400">
+            </div>
+          </div>
+          
+          <!-- Quick Stats -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-[#1c2722] rounded-xl p-4 border border-gray-700/50">
+              <p class="text-gray-400 text-sm mb-1">This Month</p>
+              <p class="text-xl font-bold text-white">$0.00</p>
+            </div>
+            <div class="bg-[#1c2722] rounded-xl p-4 border border-gray-700/50">
+              <p class="text-gray-400 text-sm mb-1">Last Payout</p>
+              <p class="text-xl font-bold text-white">—</p>
+            </div>
+            <div class="bg-[#1c2722] rounded-xl p-4 border border-gray-700/50">
+              <p class="text-gray-400 text-sm mb-1">Total Paid</p>
+              <p class="text-xl font-bold text-white">$0.00</p>
+            </div>
+          </div>
+          
+          <!-- Transaction History -->
+          <div class="bg-[#1c2722] rounded-xl shadow-xl p-6 border border-gray-700/50">
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-xl font-bold text-white">Transaction History</h2>
+              <button class="text-green-400 hover:text-green-300 text-sm font-medium transition-colors">
+                View All
+              </button>
+            </div>
+            
+            <div class="overflow-x-auto">
+              <table class="w-full">
+                <thead>
+                  <tr class="border-b border-gray-700">
+                    <th class="text-left py-3 px-2 text-sm font-semibold text-gray-300">Date</th>
+                    <th class="text-left py-3 px-2 text-sm font-semibold text-gray-300">Amount</th>
+                    <th class="text-left py-3 px-2 text-sm font-semibold text-gray-300">Method</th>
+                    <th class="text-right py-3 px-2 text-sm font-semibold text-gray-300">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="payoutHistoryBody" class="divide-y divide-gray-700/50">
+                  <tr>
+                    <td colspan="4" class="text-center py-12 text-gray-500">
+                      <div class="flex flex-col items-center gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="text-gray-600">
+                          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                          <circle cx="12" cy="12" r="4"/>
+                        </svg>
+                        <p>No transaction history yet</p>
+                        <p class="text-sm">Your payout history will appear here</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Payout Modal -->
+  <div id="payoutModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-[#1c2722] rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-green-500/20 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17,8 12,3 7,8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-white">Request Payout</h3>
+        </div>
+        <button id="closeModal" class="text-gray-400 hover:text-white transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      
+      <form id="withdrawForm" novalidate class="space-y-6">
+        
+        <!-- Error Message -->
+        <div id="formError" class="hidden bg-red-500/10 text-red-300 border border-red-500/30 p-4 rounded-lg text-sm">
+          <div class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+            <span id="errorText"></span>
+          </div>
+        </div>
+  
+        <!-- Amount Field -->
+        <div>
+          <label for="amount" class="block text-sm font-medium text-gray-300 mb-3">Amount (USD)</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-lg">$</span>
+            <input 
+              type="number" 
+              id="amount" 
+              name="amount" 
+              class="w-full bg-[#111714] border border-gray-600 rounded-xl p-4 pl-10 text-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-white placeholder-gray-500 transition-all" 
+              placeholder="50.00" 
+              step="0.01" 
+              min="50" 
+              required
+            >
+          </div>
+          <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+            Minimum payout is $50.00
+          </p>
+        </div>
+  
+        <!-- Method Selection -->
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-3">Payout Method</label>
+          <input type="hidden" id="method" name="method" required>
+          <div id="method-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        </div>
+  
+        <!-- Email Field -->
+        <div id="emailContainer" class="hidden">
+          <label for="email" class="block text-sm font-medium text-gray-300 mb-3">Email Address</label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            class="w-full bg-[#111714] border border-gray-600 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" 
+            placeholder="your-email@example.com"
+          >
+        </div>
+  
+        <!-- Wallet Address Field -->
+        <div id="walletAddressContainer" class="hidden">
+          <label for="walletAddress" class="block text-sm font-medium text-gray-300 mb-3">Wallet Address</label>
+          <input 
+            type="text" 
+            id="walletAddress" 
+            name="walletAddress" 
+            class="w-full bg-[#111714] border border-gray-600 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all font-mono text-sm" 
+            placeholder="0x..."
+          >
+        </div>
+  
+        <!-- Submit Button -->
+        <button 
+          type="submit" 
+          class="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+        >
+          <span class="flex items-center justify-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17,8 12,3 7,8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            Submit Request
+          </span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function logout() {
+      localStorage.removeItem("username");
+      localStorage.removeItem("key");
+      window.location.href = "/";
+    }
+
+    const userBalance = 0.00;
+    const payoutHistory = [];
+    const payoutMethods = [
+      { value: 'PayPal', label: 'PayPal', type: 'email', icon: '' },
+      { value: 'Invoice', label: 'Request Invoice', type: 'email', icon: '' },
+      { value: 'USDC_BNB', label: 'USDC (BEP-20)', type: 'wallet', icon: '' },
+      { value: 'USDT_BNB', label: 'USDT (BEP-20)', type: 'wallet', icon: '' },
+    ];
+
+    function renderBalance() {
+      const balanceEl = document.getElementById('balance');
+      if (balanceEl) {
+        balanceEl.textContent = `$${userBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }
+    }
+
+    function renderMethodOptions() {
+      const container = document.getElementById('method-options');
+      if (!container) return;
+      
+      container.innerHTML = payoutMethods.map(method => `
+        <div class="payout-method-option bg-[#111714] p-4 rounded-xl border-2 border-gray-600 cursor-pointer hover:border-green-500 transition-all duration-200 text-sm group" data-value="${method.value}" data-type="${method.type}">
+          <div class="flex items-center gap-3">
+            <span class="text-lg">${method.icon}</span>
+            <span class="font-medium group-hover:text-green-300 transition-colors">${method.label}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function resetWithdrawForm() {
+      const withdrawForm = document.getElementById('withdrawForm');
+      if (!withdrawForm) return;
+
+      withdrawForm.reset();
+      document.getElementById('formError').classList.add('hidden');
+      document.getElementById('emailContainer').classList.add('hidden');
+      document.getElementById('walletAddressContainer').classList.add('hidden');
+      document.querySelectorAll('.payout-method-option').forEach(opt => {
+        opt.classList.remove('border-green-500', 'bg-green-900/20');
+        opt.classList.add('border-gray-600');
+      });
+    }
+
+    function showError(message) {
+      const formError = document.getElementById('formError');
+      const errorText = document.getElementById('errorText');
+      if (formError && errorText) {
+        errorText.textContent = message;
+        formError.classList.remove('hidden');
+      }
+    }
+
+    function openModal() {
+      document.getElementById('payoutModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('payoutModal').classList.add('hidden');
+      document.body.style.overflow = 'auto';
+      resetWithdrawForm();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderBalance();
+      renderMethodOptions();
+
+      const requestPayoutBtn = document.getElementById('requestPayoutBtn');
+      const closeModalBtn = document.getElementById('closeModal');
+      const payoutModal = document.getElementById('payoutModal');
+      const withdrawForm = document.getElementById('withdrawForm');
+      const methodOptionsContainer = document.getElementById('method-options');
+      const emailContainer = document.getElementById('emailContainer');
+      const emailInput = document.getElementById('email');
+      const walletAddressContainer = document.getElementById('walletAddressContainer');
+      const walletAddressInput = document.getElementById('walletAddress');
+      const formError = document.getElementById('formError');
+
+      // Modal controls
+      if (requestPayoutBtn) {
+        requestPayoutBtn.addEventListener('click', openModal);
+      }
+
+      if (closeModalBtn) {
+        closeModalBtn.addEventListener('click', closeModal);
+      }
+
+      // Close modal when clicking outside
+      if (payoutModal) {
+        payoutModal.addEventListener('click', function(e) {
+          if (e.target === payoutModal) {
+            closeModal();
+          }
+        });
+      }
+
+      // Close modal with Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !payoutModal.classList.contains('hidden')) {
+          closeModal();
+        }
+      });
+
+      if (methodOptionsContainer) {
+        methodOptionsContainer.addEventListener('click', function(e) {
+          const target = e.target.closest('.payout-method-option');
+          if (!target) return;
+
+          document.getElementById('method').value = target.dataset.value;
+          formError.classList.add('hidden');
+
+          document.querySelectorAll('.payout-method-option').forEach(opt => {
+            opt.classList.remove('border-green-500', 'bg-green-900/20');
+            opt.classList.add('border-gray-600');
+          });
+          
+          target.classList.add('border-green-500', 'bg-green-900/20');
+          target.classList.remove('border-gray-600');
+
+          const methodType = target.dataset.type;
+          if (methodType === 'email') {
+            emailContainer.classList.remove('hidden');
+            emailInput.required = true;
+            walletAddressContainer.classList.add('hidden');
+            walletAddressInput.required = false;
+          } else if (methodType === 'wallet') {
+            walletAddressContainer.classList.remove('hidden');
+            walletAddressInput.required = true;
+            emailContainer.classList.add('hidden');
+            emailInput.required = false;
+          }
+        });
+      }
+
+      if (withdrawForm) {
+        withdrawForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          formError.classList.add('hidden');
+
+          const amount = parseFloat(document.getElementById('amount').value);
+          const method = document.getElementById('method').value;
+          
+          if (!amount || amount <= 0) {
+            showError('Please enter a valid amount.');
+            return;
+          }
+
+          if (amount < 50) {
+            showError('Minimum payout amount is $50.00.');
+            return;
+          }
+
+          if (!method) {
+            showError('Please select a payout method.');
+            return;
+          }
+
+          if (amount > userBalance) {
+            showError(`Insufficient balance. Your available balance is $${userBalance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+            return;
+          }
+
+          // Success message
+          alert('Payout request submitted successfully! You will receive a confirmation email shortly.');
+          closeModal();
+        });
+      }
+    });
+  </script>
+</body>
+</html>

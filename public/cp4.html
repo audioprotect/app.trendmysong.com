@@ -1,0 +1,24 @@
+<head>
+      <title>CP-4</title>
+</head>
+<div 
+    id="filloutEmbed" 
+    style="width:100%;height:400px;" 
+    data-fillout-id="aCsdtBiTjuus" 
+    data-fillout-embed-type="standard" 
+    data-fillout-inherit-parameters 
+    data-fillout-dynamic-resize
+></div>      
+
+<script>
+    // Retrieve the "key" value from localStorage
+    const key = localStorage.getItem("key");
+
+    // If "key" exists in localStorage, update the data-fillout-id attribute
+    if (key) {
+        const filloutEmbed = document.getElementById("filloutEmbed");
+        filloutEmbed.setAttribute("data-fillout-id", `aCsdtBiTjuus?login_key=${key}`);
+    }
+</script>
+
+<script src="https://server.fillout.com/embed/v1/"></script>

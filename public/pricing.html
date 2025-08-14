@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing | Trend My Song</title>
+  <link rel="icon" href="data:image/x-icon;base64," />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='lightgreen' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='M16.5 20.93a5 5 0 1 1-.6-9 7 7 0 0 0-13.9.6'/></svg>">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(90deg, #ffffff, #dbe8fd);
+            color: #1a1a1a;
+            line-height: 1.5;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .form-input.valid {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+
+        .form-input.invalid {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+
+
+        .header {
+            text-align: left;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #f3f4f6;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ba1f, #20b003);
+            width: 25%;
+            transition: width 0.3s ease;
+        }
+
+        .step-header {
+            padding: 24px 32px 16px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .step-number {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .step-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .step-description {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .step-content {
+            padding: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+        }
+
+        .slider-container {
+            margin-top: 16px;
+        }
+
+        .slider-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e5e7eb;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .option-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            position: relative;
+        }
+
+        .option-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .option-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+        }
+
+        .option-card.selected::after {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            color: #3b82f6;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .option-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .option-description {
+            color: #6b7280;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .promo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .promo-btn {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .promo-btn:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .promo-btn.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+        }
+
+        .promo-btn.selected::after {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            color: #3b82f6;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .promo-value {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .promo-price {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .payment-method {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            position: relative;
+        }
+
+        .payment-method:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .payment-method.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+        }
+
+        .payment-method.selected::after {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            color: #3b82f6;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .payment-method-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .payment-method-title {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 16px;
+        }
+
+        .payment-method-price {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 18px;
+        }
+
+        .payment-method-description {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .step-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 32px;
+            border-top: 1px solid #f3f4f6;
+            background: #fafbfc;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #c6dbff;
+            color: #111111;
+        }
+
+        .btn-primary:hover {
+            background: #92b0f0;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+            color: #1a1a1a;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .summary-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            padding: 24px;
+            position: sticky;
+            top: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 16px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .summary-label {
+            color: #6b7280;
+        }
+
+        .summary-value {
+            font-weight: 500;
+            color: #1a1a1a;
+        }
+
+        .summary-total {
+            border-top: 1px solid #f3f4f6;
+            padding-top: 16px;
+            margin-top: 16px;
+        }
+
+        .summary-total .summary-item {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0;
+        }
+
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .success-message {
+            color: #10b981;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .summary-card {
+                order: -1;
+                position: static;
+            }
+            
+            .step-content {
+                padding: 24px 20px;
+            }
+            
+            .step-controls {
+                padding: 20px;
+            }
+            
+            .form-row, .form-row-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .promo-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Flexible Pricing</h1>
+            <p>Set up your music distribution and promotion in just a few steps</p>
+        </div>
+
+        <div class="checkout-container">
+            <div class="form-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+                <!-- Step 1: Services -->
+                <div class="step active" id="step1">
+                    <div class="step-header">
+                        <div class="step-number">Step 1 of 4</div>
+                        <div class="step-title">Distribution Services</div>
+                        <div class="step-description">Choose how you want to distribute your music</div>
+                    </div>
+                    <div class="step-content">
+                        <div class="form-group">
+                            <label class="form-label">Number of tracks</label>
+                            <div class="slider-container">
+                                <div class="slider-value" id="trackCountValue">1 Track</div>
+                                <input type="range" min="1" max="100" value="1" class="slider" id="trackCount">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Distribution platforms</label>
+                            <div class="options-grid">
+                                <div class="option-card" data-service="yt">
+                                    <div class="option-title">YouTube Content ID</div>
+                                    <div class="option-description">Monetize and protect your music on YouTube</div>
+                                </div>
+                                <div class="option-card" data-service="sm">
+                                    <div class="option-title">Social Media</div>
+                                    <div class="option-description">Facebook, Instagram, TikTok distribution</div>
+                                </div>
+                                <div class="option-card" data-service="dsp">
+                                    <div class="option-title">Streaming Platforms</div>
+                                    <div class="option-description">Spotify, Apple Music, Amazon Music</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-controls">
+                        <div></div>
+                        <button class="btn btn-primary" onclick="nextStep()" id="step1Next">Continue</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Promotion -->
+                <div class="step" id="step2">
+                    <div class="step-header">
+                        <div class="step-number">Step 2 of 4</div>
+                        <div class="step-title">Promotion Package</div>
+                        <div class="step-description">Boost your music with influencer promotion</div>
+                    </div>
+                    <div class="step-content">
+                        <div class="form-group">
+                            <label class="form-label">Promotion reach</label>
+                            <div class="promo-grid">
+                                <div class="promo-btn" data-views="50000" data-price="25">
+                                    <div class="promo-value">50K Views</div>
+                                </div>
+                                <div class="promo-btn" data-views="100000" data-price="50">
+                                    <div class="promo-value">100K Views</div>
+                                </div>
+                                <div class="promo-btn" data-views="500000" data-price="250">
+                                    <div class="promo-value">500K Views</div>
+                                </div>
+                                <div class="promo-btn" data-views="1000000" data-price="550">
+                                    <div class="promo-value">1M Views</div>
+                                </div>
+                                <div class="promo-btn" data-views="2000000" data-price="1200">
+                                    <div class="promo-value">2M Views</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tracks to promote</label>
+                            <div class="slider-container">
+                                <div class="slider-value" id="promotedTracksValue">1 Track</div>
+                                <input type="range" min="1" max="1" value="1" class="slider" id="promotedTracks" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-controls">
+                        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <button class="btn btn-primary" onclick="nextStep()" id="step2Next">Continue</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Contact Information -->
+                <div class="step" id="step3">
+                    <div class="step-header">
+                        <div class="step-number">Step 3 of 4</div>
+                        <div class="step-title">Contact Information</div>
+                        <div class="step-description">We'll use this to set up your account</div>
+                    </div>
+                    <div class="step-content">
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div>
+                                    <label class="form-label">First name</label>
+                                    <input type="text" class="form-input" id="firstName" required>
+                                </div>
+                                <div>
+                                    <label class="form-label">Last name</label>
+                                    <input type="text" class="form-input" id="lastName" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" 
+                            class="form-input" 
+                            id="email" 
+                            required
+                            placeholder="Enter your email address"
+                            autocomplete="email"
+                            spellcheck="false"
+                            pattern="[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*"
+                            title="Please enter a valid email address (example@domain.com)">
+                        <div class="error-message" id="emailError"></div>
+                        <div class="success-message" id="emailSuccess" style="display: none;"></div>
+                    </div>
+
+
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div>
+                                    <label class="form-label">City</label>
+                                    <input type="text" class="form-input" id="city" required>
+                                </div>
+                                <div>
+                                    <label class="form-label">State</label>
+                                    <input type="text" class="form-input" id="state" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-row-3">
+                                <div>
+                                    <label class="form-label">Country</label>
+                                    <input type="text" class="form-input" id="country" required>
+                                </div>
+                                <div>
+                                    <label class="form-label">ZIP code</label>
+                                    <input type="text" class="form-input" id="zipCode" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-controls">
+                        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <button class="btn btn-primary" onclick="nextStep()" id="step3Next">Continue</button>
+                    </div>
+                </div>
+                    
+                <!-- Step 4: Payment -->
+                <div class="step" id="step4">
+                    <div class="step-header">
+                        <div class="step-number">Step 4 of 4</div>
+                        <div class="step-title">Payment Methods</div>
+                        <div class="step-description">Choose your preferred payment method</div>
+                    </div>
+                    <div class="step-content">
+                        <div class="form-group">
+                            <label class="form-label">Select payment method</label>
+                            <div class="payment-methods">
+                                <div class="payment-method" data-method="card">
+                                    <div class="payment-method-header">
+                                        <div class="payment-method-title">Credit / Debit Card</div>
+                                        <div class="payment-method-price" id="cardPrice">$0</div>
+                                    </div>
+                                <div class="payment-method-description">A 10% payment processing fee is included in the price</div>
+                                <div class="payment-method-description">Taxes may be charged if applicable</div>
+                                </div>
+                                
+                                <div class="payment-method" data-method="paypal">
+                                    <div class="payment-method-header">
+                                        <div class="payment-method-title">PayPal</div>
+                                        <div class="payment-method-price" id="paypalPrice">$0</div>
+                                    </div>
+                                <div class="payment-method-description">A 10% payment processing fee is included in the price</div>
+                                <div class="payment-method-description">Taxes may be charged if applicable</div>
+                                </div>
+                                
+                                <div class="payment-method" data-method="crypto">
+                                    <div class="payment-method-header">
+                                        <div class="payment-method-title">Pay in Crypto (Stablecoins)</div>
+                                        <div class="payment-method-price" id="cryptoPrice">$0</div>
+                                    </div>
+                                    <div class="payment-method-description">Accepted Stablecoins: USDT - USDC</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="step-controls">
+                        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-primary" onclick="completeOrder('email')" id="completeOrderEmailBtn">Proceed to Checkout</button>
+                        </div>
+                    </div>        
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-title">Order Summary</div>
+                
+                <div class="summary-item">
+                    <span class="summary-label">Total Tracks</span>
+                    <span class="summary-value" id="summaryTracks">1</span>
+                </div>
+                
+                <div class="summary-item">
+                    <span class="summary-label">Distribution Services</span>
+                    <span class="summary-value" id="summaryServices">None selected</span>
+                </div>
+                
+                <div class="summary-item">
+                    <span class="summary-label">Promoted Tracks</span>
+                    <span class="summary-value" id="summaryPromo">0 Tracks</span>
+                </div>
+
+                <div class="summary-item">
+                    <span class="summary-label">Promotion Reach</span>
+                    <span class="summary-value" id="summaryPromotion">None selected</span>
+                </div>
+
+                
+                <div class="summary-total">
+                    <div class="summary-item">
+                        <span class="summary-label">Total Price</span>
+                        <span class="summary-value" id="summaryTotal">$0</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script>
+
+
+// Enhanced email validation
+const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+function validateEmailAddress(email) {
+    // Remove whitespace
+    email = email.trim();
+    
+    // Basic checks
+    if (email.length < 5 || email.length > 254) return false;
+    if (!email.includes('@')) return false;
+    if (email.split('@').length !== 2) return false;
+    
+    const [localPart, domainPart] = email.split('@');
+    
+    // Check local part
+    if (localPart.length === 0 || localPart.length > 64) return false;
+    if (localPart.startsWith('.') || localPart.endsWith('.')) return false;
+    if (localPart.includes('..')) return false;
+    
+    // Check domain part
+    if (domainPart.length === 0 || domainPart.length > 255) return false;
+    if (!domainPart.includes('.')) return false;
+    if (domainPart.startsWith('.') || domainPart.endsWith('.')) return false;
+    if (domainPart.includes('..')) return false;
+    
+    // Check with regex
+    return emailRegex.test(email);
+}
+
+function showEmailError(message) {
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('emailError');
+    const emailSuccess = document.getElementById('emailSuccess');
+    
+    emailInput.classList.remove('valid');
+    emailInput.classList.add('invalid');
+    emailError.textContent = message;
+    emailError.style.display = 'block';
+    emailSuccess.style.display = 'none';
+}
+
+function showEmailSuccess() {
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('emailError');
+    const emailSuccess = document.getElementById('emailSuccess');
+    
+    emailInput.classList.remove('invalid');
+    emailInput.classList.add('valid');
+    emailError.style.display = 'none';
+    emailSuccess.style.display = 'block';
+}
+
+function resetEmailValidation() {
+    const emailInput = document.getElementById('email');
+    const emailError = document.getElementById('emailError');
+    const emailSuccess = document.getElementById('emailSuccess');
+    
+    emailInput.classList.remove('valid', 'invalid');
+    emailError.style.display = 'none';
+    emailSuccess.style.display = 'none';
+}
+
+// Real-time email validation
+document.getElementById('email').addEventListener('input', function() {
+    const email = this.value.trim();
+    
+    if (email === '') {
+        resetEmailValidation();
+        return;
+    }
+    
+    if (validateEmailAddress(email)) {
+        showEmailSuccess();
+    } else {
+        showEmailError('Please enter a valid email address (e.g., user@example.com)');
+    }
+});
+
+// Prevent invalid email paste
+document.getElementById('email').addEventListener('paste', function(e) {
+    setTimeout(() => {
+        const email = this.value.trim();
+        if (email && !validateEmailAddress(email)) {
+            showEmailError('Please enter a valid email address');
+        }
+    }, 10);
+});
+
+let currentStep = 1;
+        const totalSteps = 4;
+        
+        let state = {
+            trackCount: 1,
+            services: [],
+            promoViews: null,
+            promoPrice: 0,
+            promotedTracks: 1,
+            contactInfo: {},
+            paymentMethod: null
+        };
+
+        const SERVICE_PRICE = 4;
+
+        function updateProgress() {
+            const progress = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function showStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById(`step${stepNumber}`).classList.add('active');
+            currentStep = stepNumber;
+            updateProgress();
+        }
+
+        function nextStep() {
+            if (validateCurrentStep()) {
+                if (currentStep < totalSteps) {
+                    showStep(currentStep + 1);
+                    if (currentStep === 4) {
+                        updatePaymentPrices();
+                    }
+                }
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                showStep(currentStep - 1);
+            }
+        }
+    
+
+// Update the validateCurrentStep function to include better email validation
+function validateCurrentStep() {
+    switch(currentStep) {
+        case 1:
+            if (state.services.length === 0) {
+                alert('Please select at least one distribution service.');
+                return false;
+            }
+            return true;
+        case 2:
+            if (!state.promoViews) {
+                alert('Please select a promotion package.');
+                return false;
+            }
+            return true;
+        case 3:
+            const requiredFields = ['firstName', 'lastName', 'email', 'city', 'state', 'country', 'zipCode'];
+            for (let field of requiredFields) {
+                const element = document.getElementById(field);
+                const value = element.value.trim();
+                
+                if (!value) {
+                    alert(`Please fill in ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}.`);
+                    element.focus();
+                    return false;
+                }
+                
+                // Special validation for email
+                if (field === 'email') {
+                    if (!validateEmailAddress(value)) {
+                        alert('Please enter a valid email address (e.g., user@example.com)');
+                        element.focus();
+                        return false;
+                    }
+                }
+            }
+            return true;
+        case 4:
+            if (!state.paymentMethod) {
+                alert('Please select a payment method.');
+                return false;
+            }
+            return true;
+        default:
+            return true;
+    }
+}
+
+        function updateTrackCount() {
+            const slider = document.getElementById('trackCount');
+            const value = parseInt(slider.value);
+            state.trackCount = value;
+
+            document.getElementById('trackCountValue').textContent = value === 1 ? '1 Track' : `${value} Tracks`;
+
+            const promotedSlider = document.getElementById('promotedTracks');
+            promotedSlider.max = value;
+            if (state.promotedTracks > value) {
+                state.promotedTracks = value;
+                promotedSlider.value = value;
+                updatePromotedTracks();
+            }
+
+            updateSummary();
+        }
+
+        function updatePromotedTracks() {
+            const slider = document.getElementById('promotedTracks');
+            const value = parseInt(slider.value);
+            state.promotedTracks = value;
+
+            document.getElementById('promotedTracksValue').textContent = value === 1 ? '1 Track' : `${value} Tracks`;
+            updateSummary();
+        }
+
+        function toggleService(element, service) {
+            if (state.services.includes(service)) {
+                state.services = state.services.filter(s => s !== service);
+                element.classList.remove('selected');
+            } else {
+                state.services.push(service);
+                element.classList.add('selected');
+            }
+            updateSummary();
+        }
+
+        function selectPromoLevel(element, views, price) {
+            document.querySelectorAll('.promo-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            element.classList.add('selected');
+            state.promoViews = views;
+            state.promoPrice = price;
+
+            document.getElementById('promotedTracks').disabled = false;
+            updateSummary();
+        }
+
+        function selectPaymentMethod(element, method) {
+            document.querySelectorAll('.payment-method').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            element.classList.add('selected');
+            state.paymentMethod = method;
+        }
+
+        function updatePaymentPrices() {
+            const distributionPrice = state.trackCount * state.services.length * SERVICE_PRICE;
+            const promotionPrice = state.promotedTracks * state.promoPrice;
+            const subtotal = distributionPrice + promotionPrice * 1.50;
+            const total = subtotal;
+            
+
+            document.getElementById('cardPrice').textContent = `$${(total * 1.10).toFixed(2)}`;
+            document.getElementById('paypalPrice').textContent = `$${(total * 1.10).toFixed(2)}`;
+            document.getElementById('cryptoPrice').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function updateSummary() {
+            const distributionPrice = state.trackCount * state.services.length * SERVICE_PRICE;
+            const promotionPrice = state.promotedTracks * state.promoPrice;
+            const subtotal = distributionPrice + promotionPrice * 1.50;
+            const serviceFee = subtotal * 1.10;
+            const total = subtotal;
+
+            document.getElementById('summaryTracks').textContent = state.trackCount === 1 ? '1 Track' : `${state.trackCount} Tracks`;
+            
+            const servicesText = state.services.length === 0 ? 'None selected' : 
+                state.services.map(s => {
+                    switch(s) {
+                        case 'yt': return 'Content ID';
+                        case 'sm': return 'Social Media';
+                        case 'dsp': return 'DSPs';
+                        default: return s;
+                    }
+                }).join(', ');
+            document.getElementById('summaryServices').textContent = servicesText;
+
+            const promoText = state.promoViews ? 
+                `${(state.promoViews / 1000000 >= 1) ? (state.promoViews / 1000000) + 'M' : (state.promoViews / 1000) + 'K'} Views` : 
+                'None selected';
+            document.getElementById('summaryPromotion').textContent = promoText;
+            document.getElementById('summaryTotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('summaryPromo').textContent = state.promotedTracks === 1 ? '1 Track' : `${state.promotedTracks} Tracks`;
+        }
+
+function completeOrder(method = 'email') {
+    if (validateCurrentStep()) {
+        // Collect contact information
+        state.contactInfo = {
+            firstName: document.getElementById('firstName').value.trim(),
+            lastName: document.getElementById('lastName').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            city: document.getElementById('city').value.trim(),
+            state: document.getElementById('state').value.trim(),
+            country: document.getElementById('country').value.trim(),
+            zipCode: document.getElementById('zipCode').value.trim()
+        };
+
+        // Map service codes to display names
+        const serviceMap = {
+            yt: 'YouTube Content ID',
+            sm: 'Social Media',
+            dsp: 'Streaming Platforms'
+        };
+        const displayServices = state.services
+            .map(code => serviceMap[code] || code)
+            .join(', ');
+
+
+        // Calculate base price
+        const distributionPrice = state.trackCount * state.services.length * SERVICE_PRICE;
+            const promotionPrice = state.promotedTracks * state.promoPrice;
+            const subtotal = distributionPrice + promotionPrice * 1.50;
+            const serviceFee = subtotal * 1.10;
+            const total = subtotal;
+        
+        // Apply payment method fee
+        let totalPrice = subtotal;
+        if (state.paymentMethod === 'card' || state.paymentMethod === 'paypal') {
+            totalPrice = subtotal * 1.10; // 10% processing fee
+        }
+
+        // Build URL parameters
+        const params = new URLSearchParams({
+            // Track and service info
+            trackCount: state.trackCount,
+            services: state.services.join(','),
+            displayServices: displayServices,  // <-- new param
+            
+            // Promotion info
+            promoViews: state.promoViews || 0,
+            promotedTracks: state.promotedTracks,
+            
+            // Contact info
+            firstName: state.contactInfo.firstName,
+            lastName: state.contactInfo.lastName,
+            email: state.contactInfo.email,
+            city: state.contactInfo.city,
+            state: state.contactInfo.state,
+            country: state.contactInfo.country,
+            zipCode: state.contactInfo.zipCode,
+            
+            // Payment info
+            paymentMethod: state.paymentMethod,
+            deliveryMethod: method,
+            
+            // Total price only
+            totalPrice: totalPrice.toFixed(2),
+            
+            // Additional info
+            timestamp: new Date().toISOString()
+        });
+
+        // Redirect to checkout with all parameters
+        window.location.href = `/checkout?${params.toString()}`;
+    }
+}
+        // Event listeners
+        document.getElementById('trackCount').addEventListener('input', updateTrackCount);
+        document.getElementById('promotedTracks').addEventListener('input', updatePromotedTracks);
+
+        // Service option click handlers
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const service = this.getAttribute('data-service');
+                toggleService(this, service);
+            });
+        });
+
+        // Promotion level click handlers
+        document.querySelectorAll('.promo-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const views = parseInt(this.getAttribute('data-views'));
+                const price = parseInt(this.getAttribute('data-price'));
+                selectPromoLevel(this, views, price);
+            });
+        });
+
+        // Payment method click handlers
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', function() {
+                const paymentMethod = this.getAttribute('data-method');
+                selectPaymentMethod(this, paymentMethod);
+            });
+        });
+
+        // Initialize
+        updateProgress();
+        updateSummary();
+
+</script>

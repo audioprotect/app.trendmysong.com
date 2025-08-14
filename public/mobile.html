@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard</title>
+  <link rel="icon" href="data:image/x-icon;base64," />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='lightgreen' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='M16.5 8.93a5 5 0 1 1-.6-9 7 7 0 0 0-13.9.6'/></svg>">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Spline+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .notice-banner {
+      position: sticky;
+      background-color: rgb(134, 0, 0);
+      display: none;
+      top: 0;
+      left: 0;
+      width: 100%;
+      border-radius: 15px;
+      color: white;
+      padding: 0.6rem 1rem;
+      text-align: left;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border-color);
+      z-index: 9999;
+      margin-bottom: 1rem;
+    }
+    
+    .circular-chart {
+      display: block;
+      margin: 10px auto;
+      max-width: 120px;
+      max-height: 120px;
+    }
+    
+    .circle-bg {
+      fill: none;
+      stroke: #29382f;
+      stroke-width: 3.8;
+    }
+    
+    .circle {
+      fill: none;
+      stroke-width: 2.8;
+      stroke-linecap: round;
+      animation: progress 1s ease-out forwards;
+    }
+    
+    @keyframes progress {
+      0% {
+        stroke-dasharray: 0 100;
+      }
+    }
+    
+    .percentage {
+      fill: #4ade80;
+      font-family: 'Spline Sans', sans-serif;
+      font-size: 0.8em;
+      text-anchor: middle;
+      font-weight: 600;
+    }
+    
+    .stats-card {
+      background: linear-gradient(135deg, #1a211c 0%, #29382f 100%);
+      border: 1px solid #2a3a30;
+    }
+    
+    .mobile-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #111714;
+      border-top: 1px solid #29382f;
+      z-index: 1000;
+      padding: 0.5rem 0;
+    }
+    
+    .mobile-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.5rem;
+      text-decoration: none;
+      color: #a1a1aa;
+      font-size: 0.75rem;
+    }
+    
+    .mobile-nav-item.active {
+      color: #4ade80;
+    }
+    
+    .mobile-nav-item svg {
+      width: 20px;
+      height: 20px;
+      margin-bottom: 0.25rem;
+    }
+    
+    .mobile-header {
+      position: sticky;
+      top: 0;
+      background: #111714;
+      border-bottom: 1px solid #29382f;
+      z-index: 999;
+      padding: 1rem;
+    }
+    
+    .mobile-content {
+      padding: 1rem;
+      padding-bottom: 80px;
+    }
+    
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 280px;
+      height: 100vh;
+      background: #111714;
+      z-index: 1001;
+      transition: left 0.3s ease;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+    
+    .mobile-menu.open {
+      left: 0;
+    }
+    
+    .mobile-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: none;
+    }
+    
+    .mobile-overlay.open {
+      display: block;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .mobile-card {
+      background: #1a211c;
+      border: 1px solid #2a3a30;
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .sort-button {
+      background: #1f2923;
+      color: white;
+      border: 1px solid #2e3a33;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+    
+    .sort-button:hover,
+    .sort-button.active {
+      background: #4ade80;
+      color: black;
+      border-color: #4ade80;
+    }
+
+    /* Container Setup */
+#dataContainer {
+  padding: 1rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.mobile-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Track Card */
+.track-card {
+  background: #1f1f1f;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  color: #f0f0f0;
+}
+
+/* Header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.track-id {
+  font-weight: bold;
+  color: #aaa;
+}
+
+.track-status span {
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* Status Colors */
+.status-removed { background: #ef4444; color: #fff; }
+.status-review { background: #3b82f6; color: #fff; }
+.status-progress { background: #eab308; color: #000; }
+.status-copyrighted { background: #10b981; color: #000; }
+.status-approved { background: #22c55e; color: #000; }
+
+/* Content */
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.track-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.track-artist, .track-album {
+  font-size: 0.85rem;
+  color: #bbb;
+}
+
+.track-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.track-date {
+  color: #888;
+}
+
+.track-type span {
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  background: #374151;
+  color: #f9fafb;
+}
+
+/* Type Colors (Optional) */
+.type-original { background: #6b7280; }
+.type-cover { background: #4b5563; }
+.type-remix { background: #9ca3af; }
+
+/* Play Button */
+.mobile-play-button {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #4ade80;
+  color: #111;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.mobile-play-button:hover {
+  background: #22c55e;
+}
+
+/* Pagination */
+.mobile-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.mobile-page-btn {
+  background: #2d2d2d;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.mobile-page-btn:disabled {
+  background: #444;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+/* Loading and Error States */
+.loading, .no-data, .mobile-error {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #ccc;
+}
+
+.mobile-error h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.mobile-retry-btn {
+  margin-top: 1rem;
+  background: #4ade80;
+  color: #111;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+  </style>
+         
+</head>
+<body class="bg-[#111714] text-white min-h-screen">
+  <!-- Mobile Header -->
+  <div class="mobile-header">
+    <div class="flex items-center justify-between">
+      
+      <div class="flex items-center gap-2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M16.5 8.93a5 5 0 1 1-.6-9 7 7 0 0 0-13.9.6"/>
+        </svg>
+        <h1 class="text-lg font-bold bg-gradient-to-r from-green-400 to-green-200 bg-clip-text text-transparent">Trend My Song</h1>
+      <p class="text-sm text-gray-400">Mobile screens are not fully supported, to access the full dashboard and functionality, please use a desktop device.</p>
+    </div>
+          </div>
+  </div>
+  </div>
+
+  <main class="flex-1 p-4 overflow-auto">
+    <h2 class="text-xl font-bold mb-4">Dashboard</h2>
+  
+    <!-- Mobile Tab Navigation -->
+    <div class="mb-4 border-b border-[#29382f]">
+      <div class="flex overflow-x-auto scrollbar-hide">
+        <button class="tab-button pb-2 px-3 border-b-2 border-white font-semibold whitespace-nowrap flex-shrink-0" data-tab="overview" aria-selected="true" role="tab" id="tab-overview" aria-controls="panel-overview" tabindex="0">Overview</button>
+        <button class="tab-button pb-2 px-3 border-b-2 border-transparent hover:border-[#4ade80] font-semibold whitespace-nowrap flex-shrink-0" data-tab="control-panel" aria-selected="false" role="tab" id="tab-control-panel" aria-controls="panel-control-panel" tabindex="-1">Current Plan</button>
+        <button class="tab-button pb-2 px-3 border-b-2 border-transparent hover:border-[#4ade80] font-semibold whitespace-nowrap flex-shrink-0" data-tab="claim-management" aria-selected="false" role="tab" id="tab-claim-management" aria-controls="panel-claim-management" tabindex="-1">Claim Management</button>
+        <button class="tab-button pb-2 px-3 border-b-2 border-transparent hover:border-[#4ade80] font-semibold whitespace-nowrap flex-shrink-0" data-tab="support-team" aria-selected="false" role="tab" id="tab-support-team" aria-controls="panel-support-team" tabindex="-1">Support Team</button>
+      </div>
+    </div>
+  
+    <!-- Overview Section -->
+    <section id="overview" class="tab-panel" role="tabpanel" aria-labelledby="tab-overview" tabindex="0">
+      <!-- Stats Cards - Stacked on Mobile -->
+      <div class="grid grid-cols-1 gap-4 mb-6">
+        <div class="bg-[#29382f] rounded-xl p-4">
+          <h3 class="text-base font-semibold mb-2">In Review</h3>
+          <p class="text-3xl font-bold" id="review">—</p>
+          <p class="mt-1 text-sm text-[#a1a1aa]">Tracks In Review</p>
+        </div>
+        <div class="bg-[#29382f] rounded-xl p-4">
+          <h3 class="text-base font-semibold mb-2">In Progress</h3>
+          <p class="text-3xl font-bold" id="progress">—</p>
+          <p class="mt-1 text-sm text-[#a1a1aa]">Tracks In Progress</p>
+        </div>
+        <div class="bg-[#29382f] rounded-xl p-4">
+          <h3 class="text-base font-semibold mb-2">Approved</h3>
+          <p class="text-3xl font-bold" id="copyrighted">—</p>
+          <p class="mt-1 text-sm text-[#a1a1aa]">Tracks Delivered</p>
+        </div>
+      </div>
+  
+      <!-- Notice Banner -->
+      <div class="notice-banner bg-red-900/20 border border-red-500/30 rounded-lg p-3 mb-6 text-sm">
+        ⛔ There <span id="verb">are</span> <span id="rejected-count">0</span> rejected, suspended or removed <span id="noun">tracks</span>, please check the track list below.
+      </div>
+  
+      <!-- Track List Section -->
+      <div class="mt-6">
+        <h3 class="text-lg font-semibold mb-4">Track List</h3>
+        
+        <!-- Mobile Controls - Stacked -->
+        <div class="space-y-3 mb-4">
+          <!-- Sort Buttons -->
+          <div class="flex gap-2">
+            <button id="sortOldToNew" class="sort-button flex-1 bg-[#1f2923] text-white px-3 py-2 text-sm rounded-lg border border-[#2e3a33] hover:border-[#4ade80] transition-colors">Oldest First</button>
+            <button id="sortNewToOld" class="sort-button flex-1 bg-[#1f2923] text-white px-3 py-2 text-sm rounded-lg border border-[#2e3a33] hover:border-[#4ade80] transition-colors">Newest First</button>
+          </div>
+          
+          <!-- Search Input -->
+          <div class="w-full">
+            <input id="searchInput" type="text" placeholder="Search by title or artist..." 
+              class="bg-[#1f2923] text-white px-3 py-2.5 rounded-lg w-full border border-[#2e3a33] focus:border-[#4ade80] focus:outline-none transition-colors text-sm" />
+          </div>
+          
+          <!-- Pagination - Mobile Friendly -->
+          <div id="paginationContainer" class="flex justify-center">
+          </div>
+        </div>
+  
+        <!-- Table Container - Mobile Optimized -->
+        <div class="table-container overflow-x-auto">
+          <div id="dataContainer">
+            <div class="loading text-center py-8 text-[#a1a1aa]">Loading tracks...</div>
+          </div>
+        </div>
+        
+        <!-- Page Info -->
+        <div class="page-info text-center text-sm text-[#a1a1aa] mt-4" id="pageInfo">
+        </div>
+      </div>
+    </section>
+  
+    <!-- Control Panel Section -->
+    <section id="control-panel" class="tab-panel" role="tabpanel" aria-labelledby="tab-control-panel" tabindex="0" style="display: none;">
+      <div class="space-y-4">
+        <!-- Tracks Usage Section - Mobile Layout -->
+        <div class="bg-[#1a211c] rounded-xl p-4 border border-[#2a3a30] shadow-lg">
+          <h3 class="text-base font-semibold mb-4 text-white flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400">
+              <path d="M9 18V5l12-2v13"/>
+              <path d="m9 9 12-2"/>
+              <circle cx="6" cy="18" r="3"/>
+              <circle cx="18" cy="16" r="3"/>
+            </svg>
+            Tracks Usage
+          </h3>
+          
+          <!-- Circular Progress - Mobile Centered -->
+          <div class="flex flex-col items-center space-y-4">
+            <div class="w-32 h-32">
+              <svg viewBox="0 0 36 36" class="circular-chart w-full h-full">
+                <path class="circle-bg"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                  stroke="#29382f"
+                  stroke-width="2"
+                  fill="none"
+                />
+                <path id="circularProgress" class="circle"
+                  stroke="url(#gradient)"
+                  stroke-width="2"
+                  stroke-dasharray="0, 100"
+                  fill="none"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <defs>
+                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#4ade80;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#22c55e;stop-opacity:1" />
+                  </linearGradient>
+                </defs>
+                <text x="10" y="22" class="text-xs font-bold fill-white text-center" id="percentageText">0%</text>
+              </svg>
+            </div>
+            
+            <!-- Stats - Mobile Grid -->
+            <div class="grid grid-cols-3 gap-3 w-full">
+              <div class="stats-card bg-[#29382f] rounded-lg p-3 text-center">
+                <span class="block text-gray-400 text-xs mb-1">Uploaded</span>
+                <span id="tracksUploaded" class="text-lg font-bold text-green-300">-</span>
+              </div>
+              <div class="stats-card bg-[#29382f] rounded-lg p-3 text-center">
+                <span class="block text-gray-400 text-xs mb-1">Remaining</span>
+                <span id="tracksLeft" class="text-lg font-bold text-blue-300">-</span>
+              </div>
+              <div class="stats-card bg-[#29382f] rounded-lg p-3 text-center">
+                <span class="block text-gray-400 text-xs mb-1">Total Limit</span>
+                <span id="trackLimit" class="text-lg font-bold text-purple-300">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Services Section - Mobile Layout -->
+        <div class="bg-[#1a211c] rounded-xl p-4 border border-[#2a3a30] shadow-lg">
+          <h3 class="text-base font-semibold mb-4 text-white flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400">
+              <rect width="7" height="9" x="3" y="3" rx="1"/>
+              <rect width="7" height="5" x="14" y="3" rx="1"/>
+              <rect width="7" height="9" x="14" y="12" rx="1"/>
+              <rect width="7" height="5" x="3" y="16" rx="1"/>
+            </svg>
+            Active Services
+          </h3>
+          
+          <div class="space-y-2">
+            <div class="flex items-center justify-between p-3 bg-[#29382f] rounded-lg border border-[#354a3d]">
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="lightgreen" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M14.83 14.83a4 4 0 1 1 0-5.66"/>
+                </svg>
+                <span class="text-white text-sm">YouTube Content-ID</span>
+              </div>
+              <span id="YT" class="px-2 py-1 text-xs rounded-full font-medium">-</span>
+            </div>
+          
+            <div class="flex items-center justify-between p-3 bg-[#29382f] rounded-lg border border-[#354a3d]">
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="lightgreen" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                </svg>
+                <span class="text-white text-sm">Social Media</span>
+              </div>
+              <span id="SM" class="px-2 py-1 text-xs rounded-full font-medium">-</span>
+            </div>
+          
+            <div class="flex items-center justify-between p-3 bg-[#29382f] rounded-lg border border-[#354a3d]">
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="lightgreen" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m11 7.601-5.994 8.19a1 1 0 0 0 .1 1.298l.817.818a1 1 0 0 0 1.314.087L15.09 12"/>
+                  <path d="M16.5 21.174C15.5 20.5 14.372 20 13 20c-2.058 0-3.928 2.356-6 2-2.072-.356-2.775-3.369-1.5-4.5"/>
+                  <circle cx="16" cy="7" r="5"/>
+                </svg>
+                <span class="text-white text-sm">Streaming Platforms</span>
+              </div>
+              <span id="DSP" class="px-2 py-1 text-xs rounded-full font-medium">-</span>
+            </div>
+          
+            <div class="flex items-center justify-between p-3 bg-[#29382f] rounded-lg border border-[#354a3d]">
+              <div class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="lightgreen" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+                </svg>
+                <span class="text-white text-sm">Promotion Campaigns</span>
+              </div>
+              <span id="PM" class="px-2 py-1 text-xs rounded-full font-medium">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Claim Management Section -->
+    <section id="claim-management" class="tab-panel" role="tabpanel" aria-labelledby="tab-claim-management" tabindex="0" style="display: none;">
+      <div class="space-y-4">
+        <!-- Whitelist Form - Mobile -->
+        <div class="bg-[#1a211c] rounded-xl p-4">
+          <h3 class="text-base font-semibold mb-4">Whitelist YouTube Channel</h3>
+          <form id="whitelistForm" class="space-y-4" onsubmit="handleWhitelistSubmit(event)">
+            <div>
+              <label for="channelUrl" class="block text-sm font-medium mb-2">YouTube Channel URL</label>
+              <input 
+                type="text" 
+                id="channelUrl" 
+                name="channelUrl"
+                placeholder="https://youtube.com/channel/..."
+                class="w-full bg-[#1f2923] text-white px-3 py-2 rounded-lg border border-[#2e3a33] focus:border-[#4ade80] focus:outline-none transition-colors text-sm"
+                required
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium mb-2">Whitelist Option</label>
+              <div class="space-y-2">
+                <label class="relative flex items-start p-3 bg-[#1f2923] rounded-lg border border-[#2e3a33] cursor-pointer hover:border-[#4ade80] transition-colors">
+                  <input type="radio" name="whitelistType" value="all" class="mt-1 mr-3" checked />
+                  <div class="flex-1">
+                    <span class="text-sm font-medium text-white">Whitelist from all tracks</span>
+                    <p class="text-xs text-[#a1a1aa] mt-1">Apply whitelist to all your uploaded tracks</p>
+                  </div>
+                </label>
+                
+                <label class="relative flex items-start p-3 bg-[#1f2923] rounded-lg border border-[#2e3a33] cursor-pointer hover:border-[#4ade80] transition-colors">
+                  <input type="radio" name="whitelistType" value="specific" class="mt-1 mr-3" />
+                  <div class="flex-1">
+                    <span class="text-sm font-medium text-white">Whitelist from specific tracks</span>
+                    <p class="text-xs text-[#a1a1aa] mt-1">Choose which tracks to apply whitelist to</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <button 
+                type="submit" 
+                class="w-full bg-[#4ade80] text-black font-medium py-3 px-4 rounded-lg hover:bg-[#22c55e] transition-colors text-sm"
+              >
+                Submit Whitelist Request
+              </button>
+          </form>
+          
+          <script>
+            function handleWhitelistSubmit(event) {
+              event.preventDefault();
+              
+              const key = localStorage.getItem('key');
+              const channelUrl = document.getElementById('channelUrl').value;
+              const whitelistType = document.querySelector('input[name="whitelistType"]:checked').value;
+              
+              const message = `Control Key: ${key}\nRequest Type: Whitelist YouTube Channel\nChannel URL: ${channelUrl}\nWhitelist Option: ${whitelistType}`;
+              
+              const telegramUrl = `https://t.me/trendmysong?text=${encodeURIComponent(message)}`;
+              window.open(telegramUrl, '_blank');
+            }
+          </script>
+        </div>
+        
+        <!-- Claim Removal Form - Mobile -->
+        <div class="bg-[#1a211c] rounded-xl p-4">
+          <h3 class="text-base font-semibold mb-4">YouTube Video Claim Removal</h3>
+          <form id="claimRemovalForm" class="space-y-4" onsubmit="handleClaimRemovalSubmit(event)">
+            <div>
+              <label for="MainvideoUrl" class="block text-sm font-medium mb-2">YouTube Video Link</label>
+              <input 
+                type="text" 
+                id="MainvideoUrl" 
+                name="MainvideoUrl"
+                placeholder="https://youtube.com/watch?v=..."
+                class="w-full bg-[#1f2923] text-white px-3 py-2 rounded-lg border border-[#2e3a33] focus:border-[#4ade80] focus:outline-none transition-colors text-sm"
+                required
+              />
+            </div>
+            <div>
+              <label for="additionalVideos" class="block text-sm font-medium mb-2">Additional Video Links (Optional)</label>
+              <textarea 
+                id="additionalVideos" 
+                name="additionalVideos"
+                placeholder="Enter up to 5 additional YouTube video links, one per line"
+                rows="4"
+                maxlength="250"
+                class="w-full bg-[#1f2923] text-white px-3 py-2 rounded-lg border border-[#2e3a33] focus:border-[#4ade80] focus:outline-none transition-colors resize-none text-sm"
+              ></textarea>
+              <p class="text-xs text-[#a1a1aa] mt-1">Add up to 5 additional YouTube video links that need claim removal (one per line)</p>
+            </div>
+  
+            <button 
+              type="submit" 
+              class="w-full bg-[#4ade80] text-black font-medium py-3 px-4 rounded-lg hover:bg-[#22c55e] transition-colors text-sm"
+            >
+              Submit Claim Removal Request
+            </button>
+          </form>
+          
+          <script>
+            function handleClaimRemovalSubmit(event) {
+              event.preventDefault();
+              
+              const key = localStorage.getItem('key');
+              const videoUrl = document.getElementById('MainvideoUrl').value;
+              const additionalVideos = document.getElementById('additionalVideos').value;
+              
+              let message = `Control Key: ${key}\nRequest Type: YouTube Video Claim Removal\nMain Video URL: ${videoUrl}`;
+              
+              if (additionalVideos.trim()) {
+                message += `\n\nAdditional Video URLs:\n${additionalVideos}`;
+              }
+              
+              const telegramUrl = `https://t.me/trendmysong?text=${encodeURIComponent(message)}`;
+              window.open(telegramUrl, '_blank');
+            }
+          </script>
+        </div>
+      </div>      
+    </section>
+  
+    <!-- Support Team Section -->
+    <section id="support-team" class="tab-panel" role="tabpanel" aria-labelledby="tab-support-team" tabindex="0" style="display: none;">
+      <div class="space-y-4">
+        <!-- Support Statistics - Mobile -->
+        <div class="bg-[#29382f] rounded-xl p-4">
+          <h3 class="text-base font-semibold mb-4">Support Statistics</h3>
+          <div class="space-y-3">
+            <div class="flex justify-between items-center">
+              <span class="text-sm">Live Chat Support</span>
+              <span class="font-bold text-sm">Available</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-sm">Average Response Time</span>
+              <span class="font-bold text-sm">24 hours</span>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Quick Actions - Mobile -->
+        <div class="bg-[#29382f] rounded-xl p-4">
+          <h3 class="text-base font-semibold mb-4">Quick Actions</h3>
+          <div class="space-y-3">
+            <button onclick="window.open('https://t.me/trendmysong', '_blank')" class="w-full bg-[#4ade80] text-black font-medium py-3 rounded-lg hover:bg-[#22c55e] transition-colors text-sm">
+              Live Chat Support
+            </button>
+            <button onclick="document.getElementById('ticketModal').style.display='flex'" class="w-full bg-[#1f2923] text-white font-medium py-3 rounded-lg border border-[#2e3a33] hover:border-[#4ade80] transition-colors text-sm">
+              Write a Ticket
+            </button>
+  
+            <!-- Ticket Modal - Mobile Optimized -->
+            <div id="ticketModal" style="display:none;" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+              <div class="bg-[#1a211c] rounded-xl p-4 border border-[#2a3a30] shadow-lg w-full max-w-sm relative" onclick="event.stopPropagation()">
+                <button onclick="document.getElementById('ticketModal').style.display='none'" class="absolute top-3 right-3 text-gray-400 hover:text-white transition-colors">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+                
+                <h3 class="text-base font-semibold mb-4 text-white">Write a Support Ticket</h3>
+                
+                <form id="ticketForm" onsubmit="handleTicketSubmit(event)" class="space-y-4">
+                  <div>
+                    <label for="ticketSubject" class="block text-sm font-medium mb-2">Subject</label>
+                    <input 
+                      type="text" 
+                      id="ticketSubject" 
+                      name="ticketSubject"
+                      placeholder="e.g., Issue with track upload"
+                      class="w-full bg-[#1f2923] text-white px-3 py-2 rounded-lg border border-[#2e3a33] focus:border-[#4ade80] focus:outline-none transition-colors text-sm"
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label for="ticketMessage" class="block text-sm font-medium mb-2">Message</label>
+                    <textarea 
+                      id="ticketMessage" 
+                      name="ticketMessage"
+                      rows="4"
+                      placeholder="Please describe your issue in detail..."
+                      class="w-full bg-[#1f2923] text-white px-3 py-2 rounded-lg border border-[#2e3a33] focus:border-[#4ade80] focus:outline-none transition-colors text-sm"
+                      required
+                    ></textarea>
+                  </div>
+                  
+                  <button type="submit" class="w-full bg-[#4ade80] text-black font-bold py-3 rounded-lg hover:bg-[#22c55e] transition-colors text-sm">
+                    Send via Telegram
+                  </button>
+                </form>
+              </div>
+            </div>
+  
+            <script>
+              function handleTicketSubmit(event) {
+                event.preventDefault();
+                
+                const key = localStorage.getItem('key');
+                const subject = document.getElementById('ticketSubject').value;
+                const messageBody = document.getElementById('ticketMessage').value;
+                
+                if (!key) {
+                  alert('Control Key not found. Please make sure you are logged in.');
+                  return;
+                }
+                
+                const message = `Control Key: ${key}\n\nSubject: ${subject}\n\nMessage:\n${messageBody}`;
+                
+                const telegramUrl = `https://t.me/trendmysong?text=${encodeURIComponent(message)}`;
+                window.open(telegramUrl, '_blank');
+                
+                document.getElementById('ticketModal').style.display = 'none';
+                document.getElementById('ticketForm').reset();
+              }
+  
+              // Close modal when clicking the background overlay
+              document.getElementById('ticketModal').addEventListener('click', function(event) {
+                if (event.target === this) {
+                  this.style.display = 'none';
+                }
+              });
+            </script>
+          </div>
+        </div>
+  
+        <!-- Contact Methods - Mobile -->
+        <div class="bg-[#29382f] rounded-xl p-4">
+          <h3 class="text-base font-semibold mb-4">Contact Methods</h3>
+          <div class="space-y-3">
+            <div class="p-3 bg-[#1f2923] rounded-lg">
+              <div class="mb-2">
+                <p class="font-medium text-sm">Telegram (Live Chat)</p>
+                <p class="text-xs text-[#a1a1aa]">t.me/trendmysong</p>
+              </div>
+              <span class="px-2 py-1 bg-[#4ade80] text-black text-xs rounded-full">Response Time | 12 hours</span>
+            </div>
+            <div class="p-3 bg-[#1f2923] rounded-lg">
+              <div class="mb-2">
+                <p class="font-medium text-sm">Email Support</p>
+                <p class="text-xs text-[#a1a1aa]">support@trendmysong.com</p>
+              </div>
+              <span class="px-2 py-1 bg-yellow-400 text-black text-xs rounded-full">Response Time | 72 hours</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="mt-auto pt-8">
+        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#29382f] font-medium">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+            <path d="M8 12h.01"/>
+            <path d="M12 12h.01"/>
+            <path d="M16 12h.01"/>
+          </svg>
+          <span>Support Team</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#29382f] font-medium" onclick="logout()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v10"/>
+            <path d="M18.4 6.6a9 9 0 1 1-12.77.04"/>
+          </svg>
+          <span class="text-red-300">Log Out</span>
+        </a>
+      </div>
+  
+  </main>
+  
+  <style>
+
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(17, 23, 20, 0.6);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 40;
+}
+
+.mobile-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 80%;
+  max-width: 300px;
+  height: 100%;
+  background: #111714;
+  padding: 1.5rem;
+  transition: left 0.3s ease;
+  z-index: 50;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-menu.open {
+  left: 0;
+}
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .circular-chart {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .circle-bg {
+    stroke: #29382f;
+    stroke-width: 2;
+    fill: none;
+  }
+  
+  .circle {
+    stroke-width: 2;
+    stroke-linecap: round;
+    fill: none;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+  }
+  
+  .percentage {
+    font-size: 0.5em;
+    font-weight: bold;
+    text-anchor: middle;
+    fill: white;
+  }
+  </style>
+
+<script src="mobile-table-manage.js"></script>
+<script>
+        //Function to fetch the summary data
+    async function fetchSummary() {
+        try {
+        const key = localStorage.getItem('key');
+
+        if (!key || key === 'null') {
+            console.error('Key not found');
+            window.location.href = '/';
+            return;
+        }
+        
+        const statusResponse = await fetch(`/get-sheet-summary?key=${encodeURIComponent(key)}&sheetName=portal`);
+        const data = await statusResponse.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+            console.error('No data available');
+            alert('No data available for the specified key');
+            return;
+        }
+
+        const summary = data[0];
+
+        // Display the fetched data in corresponding elements
+        document.getElementById('copyrighted').textContent = summary['Copyrighted'] || 'N/A';
+        document.getElementById('review').textContent = summary['In Review'] || 'N/A';
+        document.getElementById('progress').textContent = summary['In Progress'] || 'N/A';
+
+        document.getElementById('rejected-count').textContent = summary['Rejected'] || 0;
+        const rejectedCount = Number(summary['Rejected']) || 0;
+        const banner = document.querySelector('.notice-banner');
+        const rejectedSpan = document.getElementById('rejected-count');
+        const verbSpan = document.getElementById('verb');
+        const nounSpan = document.getElementById('noun');
+
+        if (rejectedCount > 0) {
+        rejectedSpan.textContent = rejectedCount;
+        verbSpan.textContent = rejectedCount === 1 ? 'is' : 'are';
+        nounSpan.textContent = rejectedCount === 1 ? 'track' : 'tracks';
+        banner.style.display = 'block';
+        } else {
+        banner.style.display = 'none';
+        }
+
+            
+        } catch (error) {
+        console.error('Error fetching data:', error);
+        alert('Error: Data Fetching (Contact the Support Team)');
+        }
+    }
+    // Sort button functionality
+    document.getElementById('sortOldToNew').addEventListener('click', function() {
+    // Remove active class from all sort buttons
+    document.querySelectorAll('.sort-button').forEach(btn => btn.classList.remove('active'));
+    // Add active class to clicked button
+    this.classList.add('active');
+    // Add your sorting logic here
+    console.log('Sort: Oldest First');
+    });
+
+    document.getElementById('sortNewToOld').addEventListener('click', function() {
+    // Remove active class from all sort buttons
+    document.querySelectorAll('.sort-button').forEach(btn => btn.classList.remove('active'));
+    // Add active class to clicked button
+    this.classList.add('active');
+    // Add your sorting logic here
+    console.log('Sort: Newest First');
+    });
+
+    // Tab functionality
+    document.querySelectorAll('.tab-button').forEach(button => {
+    button.addEventListener('click', () => {
+        // Remove active state from all tabs
+        document.querySelectorAll('.tab-button').forEach(tab => {
+        tab.classList.remove('border-white');
+        tab.classList.add('border-transparent');
+        });
+        
+        // Hide all tab panels
+        document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.style.display = 'none';
+        });
+        
+        // Activate clicked tab
+        button.classList.remove('border-transparent');
+        button.classList.add('border-white');
+        
+        // Show corresponding panel
+        const tabId = button.getAttribute('data-tab');
+        document.getElementById(tabId).style.display = 'block';
+    });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+fetchSummary();
+});
+
+</script>
+<script>
+async function updateTrackUsage() {
+    const key = localStorage.getItem('key');
+    if (!key) return console.error('Login key not found.');
+
+    try {
+    const response = await fetch(`/tracks-usage?key=${encodeURIComponent(key)}`);
+    if (!response.ok) throw new Error('Failed to fetch track usage');
+
+    const usageData = await response.json();
+
+    if (!usageData || usageData.length === 0) {
+        console.warn('No track usage data found.');
+        return;
+    }
+
+    const { limit, usage } = usageData[0];
+
+    const uploaded = parseInt(usage, 10) || 0;
+    const trackLimit = parseInt(limit, 10) || 0;
+    const left = Math.max(trackLimit - uploaded, 0);
+    const percentage = trackLimit > 0 ? Math.min((uploaded / trackLimit) * 100, 100) : 0;
+
+    // Update UI
+    document.getElementById('tracksUploaded').textContent = uploaded;
+    document.getElementById('tracksLeft').textContent = left;
+    document.getElementById('trackLimit').textContent = trackLimit;
+    document.getElementById('percentageText').textContent = Math.round(percentage) + '%';
+
+    // Update circular progress
+    const circle = document.getElementById('circularProgress');
+    circle.style.strokeDasharray = `${percentage}, 100`;
+
+    // Change color based on usage
+    if (percentage > 80) {
+        circle.style.stroke = '#ef4444'; // Red
+    } else if (percentage > 60) {
+        circle.style.stroke = '#f59e0b'; // Yellow
+    } else {
+        circle.style.stroke = 'url(#gradient)'; // Green
+    }
+
+    } catch (error) {
+    console.error('Error in updateTrackUsage:', error.message);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateTrackUsage();
+    updateServiceCounters(); // Assuming this is defined elsewhere
+});
+
+// Toggle switches
+document.querySelectorAll('button[class*="w-12 h-6"]').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+    const isActive = toggle.classList.contains('bg-[#4ade80]');
+    const dot = toggle.querySelector('div');
+
+    if (isActive) {
+        toggle.classList.remove('bg-[#4ade80]');
+        toggle.classList.add('bg-[#1f2923]');
+        dot.classList.remove('right-0.5');
+        dot.classList.add('left-0.5');
+    } else {
+        toggle.classList.remove('bg-[#1f2923]');
+        toggle.classList.add('bg-[#4ade80]');
+        dot.classList.remove('left-0.5');
+        dot.classList.add('right-0.5');
+    }
+    });
+});
+</script>
+<script>
+async function fetchUsage() {
+    const key = localStorage.getItem('key'); // Consistent lowercase
+    if (!key) {
+    console.error('No key found in localStorage.');
+    return;
+    }
+
+    try {
+    const res = await fetch(`/tracks-usage?key=${encodeURIComponent(key)}`);
+    if (!res.ok) throw new Error('Failed to fetch data');
+
+    const data = await res.json();
+    console.log('Fetched data:', data); // Debug output
+
+    if (!Array.isArray(data) || data.length === 0) {
+        throw new Error('No data found for this key');
+    }
+
+    const services = data[0].service;
+    if (!services) {
+        console.error('Missing service data');
+        return;
+    }
+
+    ['YT', 'SM', 'DSP', 'PM'].forEach(serviceKey => {
+        const value = services[serviceKey];
+        const el = document.getElementById(serviceKey);
+        if (!el) return;
+
+        if (value === 'Active') {
+        el.textContent = 'Active';
+        el.className = 'px-3 py-1 bg-[#4ade80] text-black text-sm rounded-full font-medium';
+        } else {
+        el.textContent = 'Inactive';
+        el.className = 'px-3 py-1 bg-[#1f2923] text-red-300 text-sm rounded-full font-medium border border-[#ef4444]';
+        }
+    });
+
+    // Optional debug output
+    const result = document.getElementById('result');
+    if (result) result.textContent = JSON.stringify(data, null, 2);
+
+    } catch (err) {
+    console.error('Error in fetchUsage:', err);
+    const result = document.getElementById('result');
+    if (result) result.textContent = 'Error: ' + err.message;
+    }
+}
+
+// ✅ Unified DOMContentLoaded block
+document.addEventListener('DOMContentLoaded', () => {
+    fetchSummary();
+    updateTrackUsage();
+    fetchUsage(); // 🟢 make sure this runs
+    updateServiceCounters?.(); // safe optional call
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const menuToggle = document.getElementById("menuToggle");
+  const mobileMenu = document.getElementById("mobileMenu");
+  const mobileOverlay = document.getElementById("mobileOverlay");
+
+  // Open Menu
+  menuToggle.addEventListener("click", function () {
+    mobileMenu.classList.add("open");
+    mobileOverlay.classList.add("visible");
+    document.body.style.overflow = "hidden"; // prevent background scroll
+  });
+
+  // Close Menu when clicking overlay
+  mobileOverlay.addEventListener("click", function () {
+    closeMobileMenu();
+  });
+
+  function closeMobileMenu() {
+    mobileMenu.classList.remove("open");
+    mobileOverlay.classList.remove("visible");
+    document.body.style.overflow = ""; // restore scroll
+  }
+
+  // Optional: Close with ESC key
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      closeMobileMenu();
+    }
+  });
+});
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const menuToggle = document.getElementById("menuToggle");
+      const mobileMenu = document.getElementById("mobileMenu");
+      const mobileOverlay = document.getElementById("mobileOverlay");
+    
+      // Open Menu
+      menuToggle.addEventListener("click", function () {
+        mobileMenu.classList.add("open");
+        mobileOverlay.classList.add("visible");
+        document.body.style.overflow = "hidden"; // prevent background scroll
+      });
+    
+      // Close Menu when clicking overlay
+      mobileOverlay.addEventListener("click", function () {
+        closeMobileMenu();
+      });
+    
+      function closeMobileMenu() {
+        mobileMenu.classList.remove("open");
+        mobileOverlay.classList.remove("visible");
+        document.body.style.overflow = ""; // restore scroll
+      }
+    
+      // Optional: Close with ESC key
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closeMobileMenu();
+        }
+      });
+    });
+    </script>
+    
+            

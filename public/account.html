@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Account</title>
+  <link rel="icon" href="data:image/x-icon;base64," />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='lightgreen' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='M16.5 20.93a5 5 0 1 1-.6-9 7 7 0 0 0-13.9.6'/></svg>">
+  <!-- Load fonts asynchronously -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700;900&family=Spline+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css"> <!-- Link to the CSS file -->
+  <script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .circular-chart {
+    display: block;
+    margin: 10px auto;
+    max-width: 80%;
+    max-height: 250px;
+  }
+  .circle-bg {
+    fill: none;
+    stroke: #29382f;
+    stroke-width: 3.8;
+  }
+  .circle {
+    fill: none;
+    stroke-width: 2.8;
+    stroke-linecap: round;
+    animation: progress 1s ease-out forwards;
+  }
+  @keyframes progress {
+    0% {
+      stroke-dasharray: 0 100;
+    }
+  }
+  .percentage {
+    fill: #4ade80;
+    font-family: 'Spline Sans', sans-serif;
+    font-size: 0.5em;
+    text-anchor: middle;
+    font-weight: 600;
+  }
+  .stats-card {
+    background: #29382f;
+    border: 1px solid #2a3a30;
+  }
+</style>
+
+</head>
+<body class="bg-[#111714] text-white min-h-screen flex overflow-x-hidden">
+
+  <!-- Sidebar -->
+  <aside class="w-80 bg-[#111714] p-6 flex flex-col fixed h-screen">
+    <div class="flex items-center gap-3 mb-8">
+      <div
+        aria-label="Music Distribution Co. Logo"
+      ></div>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="lightgreen" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wave-circle-icon lucide-wave-circle"><circle cx="12" cy="12" r="10"/><path d="M16.5 20.93a5 5 0 1 1-.6-9 7 7 0 0 0-13.9.6"/></svg>
+      <h1 class="text-lg font-bold bg-gradient-to-r from-green-400 to-green-200 bg-clip-text text-transparent">Trend My Song</h1>
+    </div>
+    
+    <nav class="flex flex-col gap-2" aria-label="Primary Navigation">
+      <a href="dashboard" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="release" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-music4-icon lucide-music-4"><path d="M9 18V5l12-2v13"/><path d="m9 9 12-2"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <span>Add Release</span>
+      </a>
+      <a href="analytics" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-no-axes-combined-icon lucide-chart-no-axes-combined"><path d="M12 16v5"/><path d="M16 14v7"/><path d="M20 10v11"/><path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15"/><path d="M4 18v3"/><path d="M8 14v7"/></svg>
+        <span>Analytics</span>
+      </a>
+      <a href="promotion" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rocket-icon lucide-rocket"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+        <span>Promotion</span>
+      </a>
+      <a href="payouts" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-dollar-sign-icon lucide-circle-dollar-sign"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+        <span>Payouts</span>
+      </a>
+      <a href="account" class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#29382f] font-medium" aria-current="page">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="lightgreen" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+        <span>Account</span>
+      </a>
+    </nav>
+
+    <div class="mt-auto">
+      <a href="support" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle-more-icon lucide-message-circle-more"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg>
+        <span>Support Team</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#29382f] font-medium" onclick="logout()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-power-icon lucide-power"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.77.04"/></svg>
+        <span class="text-red-300">Log Out</span>
+      </a>
+      <div class="border-t border-gray-700 my-2"></div>
+      <div class="flex flex-col items-left gap-1 px-3 py-2 text-sm">
+        <span class="text-gray-500 font-sans">© 2025 All Rights Reserved</span>
+        <span class="text-gray-500 font-sans">Trend My Song</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="flex-1 p-8 overflow-auto ml-80">
+    <h2 class="text-2xl font-bold mb-6">Account</h2>
+      
+      <!-- Profile Section -->
+      <div class="bg-[#1a211c] rounded-xl p-6 mb-6">
+        <div class="flex items-center gap-6 mb-6">
+          <div class="w-20 h-20 bg-green-400 rounded-full flex items-center justify-center text-2xl font-bold text-black">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-black">
+            <circle cx="12" cy="8" r="5"/>
+            <path d="M20 21a8 8 0 0 0-16 0"/>
+          </svg>
+          </div>
+          <div>
+            <h2 id="email" class="text-xl font-semibold">Loading...</h2>
+            <p id="plan" class="text-gray-400">Loading...</p>
+          </div>
+        </div>
+      
+        <!-- Account Details -->
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <h3 class="text-lg font-semibold mb-3 text-green-400">Account Details</h3>
+            <div class="space-y-3">
+              <div>
+                <span class="text-gray-400 text-sm">Control Key (User ID)</span>
+              </div>
+              <p id="key" class="font-mono text-lg px-3 py-2 rounded border border-green-400 text-green-400 hover:bg-green-400 hover:text-black transition-colors duration-300 inline-flex">******</p>
+            </div>
+          </div>
+          
+          <div>
+            <h3 class="text-lg font-semibold mb-3 text-green-400">Plan Details</h3>
+            <div class="space-y-3">
+              <div>
+                <span class="text-gray-400 text-sm">Plan Start</span>
+                <p id="startDate" class="font-medium">Loading...</p>
+              </div>
+              <div>
+                <span class="text-gray-400 text-sm">Next Due</span>
+                <p id="dueTo" class="font-medium">Loading...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <!-- Tracks Usage Section with Circular Progress -->
+        <div class="bg-[#1a211c] rounded-xl p-6 border border-[#2a3a30] shadow-lg">
+          <h3 class="text-lg font-semibold mb-4 text-white flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-400">
+              <path d="M9 18V5l12-2v13"/>
+              <path d="m9 9 12-2"/>
+              <circle cx="6" cy="18" r="3"/>
+              <circle cx="18" cy="16" r="3"/>
+            </svg>
+            Tracks Usage
+          </h3>
+          
+          <div class="flex items-center justify-between">
+            <!-- Circular Progress Chart -->
+            <div class="flex-1">
+              <svg viewBox="0 0 36 36" class="circular-chart">
+                <path class="circle-bg"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <path id="circularProgress" class="circle"
+                  stroke="url(#gradient)"
+                  stroke-dasharray="0, 100"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <defs>
+                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#4ade80;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#22c55e;stop-opacity:1" />
+                  </linearGradient>
+                </defs>
+                <text x="18" y="20.35" class="percentage" id="percentageText">0%</text>
+              </svg>
+            </div>
+            
+            <!-- Stats -->
+            <div class="flex-1 space-y-4">
+              <div class="stats-card rounded-lg p-4">
+                <span class="block text-gray-400 text-sm mb-1">Uploaded</span>
+                <span id="tracksUploaded" class="text-2xl font-bold text-green-300">-</span>
+              </div>
+              <div class="stats-card rounded-lg p-4">
+                <span class="block text-gray-400 text-sm mb-1">Remaining</span>
+                <span id="tracksLeft" class="text-2xl font-bold text-blue-300">-</span>
+              </div>
+              <div class="stats-card rounded-lg p-4">
+                <span class="block text-gray-400 text-sm mb-1">Total Limit</span>
+                <span id="trackLimit" class="text-2xl font-bold text-purple-300">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+        <!-- Services Section -->
+        <div class="bg-[#1a211c] rounded-xl p-6 border border-[#2a3a30] shadow-lg">
+          <h3 class="text-lg font-semibold mb-4 text-white flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400">
+              <rect width="7" height="9" x="3" y="3" rx="1"/>
+              <rect width="7" height="5" x="14" y="3" rx="1"/>
+              <rect width="7" height="9" x="14" y="12" rx="1"/>
+              <rect width="7" height="5" x="3" y="16" rx="1"/>
+            </svg>
+            Active Services
+          </h3>
+          
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-4 bg-[#29382f] rounded-lg border border-[#354a3d]">
+              <div class="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="lightgreen" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copyright-icon lucide-copyright"><circle cx="12" cy="12" r="10"/><path d="M14.83 14.83a4 4 0 1 1 0-5.66"/></svg>
+                <span class="text-white">YouTube Content-ID</span>
+              </div>
+              <span id="YT" class="px-3 py-1 text-sm rounded-full font-medium">-</span>
+            </div>
+          
+            <div class="flex items-center justify-between p-4 bg-[#29382f] rounded-lg border border-[#354a3d]">
+              <div class="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="lightgreen" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram-icon lucide-instagram"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>                <span class="text-white">Social Media</span>
+              </div>
+              <span id="SM" class="px-3 py-1 text-sm rounded-full font-medium">-</span>
+            </div>
+          
+            <div class="flex items-center justify-between p-4 bg-[#29382f] rounded-lg border border-[#354a3d]">
+              <div class="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="lightgreen" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mic-vocal-icon lucide-mic-vocal"><path d="m11 7.601-5.994 8.19a1 1 0 0 0 .1 1.298l.817.818a1 1 0 0 0 1.314.087L15.09 12"/><path d="M16.5 21.174C15.5 20.5 14.372 20 13 20c-2.058 0-3.928 2.356-6 2-2.072-.356-2.775-3.369-1.5-4.5"/><circle cx="16" cy="7" r="5"/></svg>                <span class="text-white">Streaming Platforms</span>
+              </div>
+              <span id="DSP" class="px-3 py-1 text-sm rounded-full font-medium">-</span>
+            </div>
+          
+            <div class="flex items-center justify-between p-4 bg-[#29382f] rounded-lg border border-[#354a3d]">
+              <div class="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="lightgreen" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flame-icon lucide-flame"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>                <span class="text-white">Promotion Campaigns</span>
+              </div>
+              <span id="PM" class="px-3 py-1 text-sm rounded-full font-medium">-</span>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+
+    </div>
+  </main>
+<!-- Check if key exists -->
+<script>
+  const key = localStorage.getItem('key');
+  if (!key || key === 'null') {
+    console.error('Key not found in localStorage');
+    window.location.href = '/';
+  }
+</script>
+
+<!-- Handle redirection to mobile version -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const isMobile = window.innerWidth <= 767;
+    if (isMobile && !window.location.pathname.includes("mobile.html")) {
+      window.location.href = "/mobile.html";
+    }
+  });
+</script>
+
+<!-- demo-key.js external script -->
+<script src="demo-key.js"></script>
+
+<!-- Main functionality -->
+<script>
+  async function fetchSummary() {
+    try {
+      const key = localStorage.getItem('key');
+      if (!key) {
+        console.error('Key not found');
+        alert('Error: Missing Key (Contact the Support Team)');
+        return;
+      }
+
+      const statusResponse = await fetch(`/get-sheet-summary?key=${encodeURIComponent(key)}&sheetName=portal`);
+      const data = await statusResponse.json();
+
+      if (!Array.isArray(data) || data.length === 0) {
+        console.error('No data available');
+        alert('No data available for the specified key');
+        return;
+      }
+
+      const summary = data[0];
+
+      document.getElementById('email').textContent = summary['Email'] || 'N/A';
+      document.getElementById('key').textContent = summary['Key'] || 'N/A';
+      document.getElementById('plan').textContent = summary['Plan'] || 'N/A';
+      document.getElementById('dueTo').textContent = summary['Due to'] || 'N/A';
+      document.getElementById('startDate').textContent = summary['Start Date'] || 'N/A';
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      alert('Error: Data Fetching (Contact the Support Team)');
+    }
+  }
+
+  async function updateTrackUsage() {
+    const key = localStorage.getItem('key');
+    if (!key) return console.error('Login key not found.');
+
+    try {
+      const response = await fetch(`/tracks-usage?key=${encodeURIComponent(key)}`);
+      if (!response.ok) throw new Error('Failed to fetch track usage');
+
+      const usageData = await response.json();
+      if (!usageData || usageData.length === 0) {
+        console.warn('No track usage data found.');
+        return;
+      }
+
+      const { limit, usage } = usageData[0];
+      const uploaded = parseInt(usage, 10) || 0;
+      const trackLimit = parseInt(limit, 10) || 0;
+      const left = Math.max(trackLimit - uploaded, 0);
+      const percentage = trackLimit > 0 ? Math.min((uploaded / trackLimit) * 100, 100) : 0;
+
+      document.getElementById('tracksUploaded').textContent = uploaded;
+      document.getElementById('tracksLeft').textContent = left;
+      document.getElementById('trackLimit').textContent = trackLimit;
+      document.getElementById('percentageText').textContent = Math.round(percentage) + '%';
+
+      const circle = document.getElementById('circularProgress');
+      circle.style.strokeDasharray = `${percentage}, 100`;
+
+      if (percentage > 80) {
+        circle.style.stroke = '#ef4444';
+      } else if (percentage > 60) {
+        circle.style.stroke = '#f59e0b';
+      } else {
+        circle.style.stroke = 'url(#gradient)';
+      }
+
+    } catch (error) {
+      console.error('Error in updateTrackUsage:', error.message);
+    }
+  }
+
+  async function fetchUsage() {
+    const key = localStorage.getItem('key');
+    if (!key) {
+      console.error('No key found in localStorage.');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/tracks-usage?key=${encodeURIComponent(key)}`);
+      if (!res.ok) throw new Error('Failed to fetch data');
+
+      const data = await res.json();
+      console.log('Fetched data:', data);
+
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new Error('No data found for this key');
+      }
+
+      const services = data[0].service;
+      if (!services) {
+        console.error('Missing service data');
+        return;
+      }
+
+      ['YT', 'SM', 'DSP', 'PM'].forEach(serviceKey => {
+        const value = services[serviceKey];
+        const el = document.getElementById(serviceKey);
+        if (!el) return;
+
+        if (value === 'Active') {
+          el.textContent = 'Active';
+          el.className = 'px-3 py-1 bg-[#4ade80] text-black text-sm rounded-full font-medium';
+        } else {
+          el.textContent = 'Inactive';
+          el.className = 'px-3 py-1 bg-[#1f2923] text-red-300 text-sm rounded-full font-medium border border-[#ef4444]';
+        }
+      });
+
+      const result = document.getElementById('result');
+      if (result) result.textContent = JSON.stringify(data, null, 2);
+
+    } catch (err) {
+      console.error('Error in fetchUsage:', err);
+      const result = document.getElementById('result');
+      if (result) result.textContent = 'Error: ' + err.message;
+    }
+  }
+
+  function logout() {
+    window.location.href = "/";
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('Account page loaded');
+    fetchUsage();
+    fetchSummary();
+    updateTrackUsage();
+    if (typeof updateServiceCounters === 'function') updateServiceCounters();
+
+    // Toggle switches
+    document.querySelectorAll('button[class*="w-12 h-6"]').forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const isActive = toggle.classList.contains('bg-[#4ade80]');
+        const dot = toggle.querySelector('div');
+
+        if (isActive) {
+          toggle.classList.remove('bg-[#4ade80]');
+          toggle.classList.add('bg-[#1f2923]');
+          dot.classList.remove('right-0.5');
+          dot.classList.add('left-0.5');
+        } else {
+          toggle.classList.remove('bg-[#1f2923]');
+          toggle.classList.add('bg-[#4ade80]');
+          dot.classList.remove('left-0.5');
+          dot.classList.add('right-0.5');
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
