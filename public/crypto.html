@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="data:image/x-icon;base64," />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='lightgreen' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='M16.5 20.93a5 5 0 1 1-.6-9 7 7 0 0 0-13.9.6'/></svg>">
+
+  <title>Crypto Invoice | Trend My Song</title>
+  <style>
+    :root{
+      --bg:#ffffff; --text:#0f172a; --muted:#6b7280; --border:#e5e7eb;
+      --brand:#635bff; --brand-ghost:#eef2ff; --card:#ffffff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .wrap{max-width:880px;margin:32px auto;padding:0 16px}
+    h1{font-size:20px;margin:0 0 6px}
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+    .amount-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
+    .amt{font-weight:700;font-size:24px}
+    .seg{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 4px}
+    .seg button{
+      appearance:none;border:1px solid var(--border);background:#fff;color:var(--text);
+      padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600
+    }
+    .seg button[aria-pressed="true"]{border-color:var(--brand);color:var(--brand);background:var(--brand-ghost)}
+    .grid{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;margin-top:12px}
+    .card{border:1px solid var(--border);border-radius:12px;padding:14px}
+    .label{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .addr{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all;border:1px dashed var(--border);border-radius:10px;padding:10px;background:#fafafa}
+    .row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:10px}
+    .copy{display:flex;gap:8px;flex-wrap:wrap}
+    .btn{
+      appearance:none;border:1px solid var(--border);background:#fff;color:var(--text);
+      padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600
+    }
+    .qrbox{display:flex;align-items:center;justify-content:center;min-height:230px;border:1px dashed var(--border);border-radius:12px;background:#fafafa}
+    .warn{color:#b91c1c;font-size:12px;margin-top:10px}
+    .muted{color:var(--muted)}
+    .tip{margin-top:16px;border:1px solid var(--border);background:#fafafa;border-radius:12px;padding:12px}
+    @media (max-width:800px){ .grid{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Pay with USDT / USDC</h1>
+
+    <div class="panel">
+      <div class="amount-row">
+        <div class="amt" id="amountLabel">$0.00</div>
+      </div>
+
+      <!-- Network selector -->
+      <div class="label">Choose network</div>
+      <div class="seg" role="tablist" aria-label="Networks">
+        <button class="segbtn" data-net="usdt_bep20" aria-pressed="true">USDT (BEP-20 / BNB Smart Chain)</button>
+        <button class="segbtn" data-net="usdt_erc20" aria-pressed="false">USDT (ERC-20 / Ethereum)</button>
+        <button class="segbtn" data-net="usdt_trc20" aria-pressed="false">USDT (TRC-20 / TRON)</button>
+        <button class="segbtn" data-net="usdc_erc20" aria-pressed="false">USDC (ERC-20 / Ethereum)</button>
+      </div>
+
+      <div class="grid">
+        <!-- Left: QR -->
+        <div class="card">
+          <div class="label">QR (address only)</div>
+          <div id="qr" class="qrbox">
+            <img id="qrImg" alt="Address QR" width="220" height="220" style="display:block; max-width:100%; height:auto;" />
+          </div>
+          <div class="warn">
+            Send the correct token on the selected network only.
+            Do <u>not</u> send native coins (ETH/BNB/TRX) or other tokens.
+          </div>
+        </div>
+
+        <!-- Right: Details -->
+        <div class="card">
+          <div class="label">Receiving address</div>
+          <div id="addr" class="addr"></div>
+
+          <div class="row">
+            <div>
+              <div class="label">Amount to send</div>
+              <div id="amtText" class="amt" style="font-size:18px">$0.00</div>
+              <div class="muted" id="tokenNote">Token: USDT</div>
+            </div>
+            <div class="copy">
+              <button class="btn" data-copy="#addr">Copy Address</button>
+              <button class="btn" data-copy="#amtText">Copy Amount</button>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:12px">
+            <div class="muted">Network:</div>
+            <div id="netLabel" class="btn" style="pointer-events:none;opacity:.8">BEP-20 / BNB Smart Chain</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <b>Important tip:</b> After payment is complete, contact
+      <a href="mailto:support@trendmysong.com">support@trendmysong.com</a> or reply to your application email and confirm the payment
+      by providing the Transaction Hash (TXID) or a screenshot of the transaction. After verifying, your account will be activated. Note that verification may take less than 8 hours on business days, and up to 12 hours on weekends.
+    </div>
+  </div>
+
+  <!-- External JS (same-origin) -->
+  <script src="crypto.js" defer></script>
+</body>
+</html>
+
+

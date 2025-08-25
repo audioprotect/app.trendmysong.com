@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Redirecting…</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; 
+           display: grid; place-items: center; min-height: 100vh; margin: 0; }
+    .wrap { text-align: center; padding: 24px; }
+    a.btn { display: inline-block; padding: 10px 16px; border: 1px solid #ccc; 
+            border-radius: 8px; text-decoration: none; }
+    small { color: #666; display: block; margin-top: 8px; }
+  </style>
+  <script>
+    (function () {
+      // 🔧 Set your Gumroad product ID here:
+      const PRODUCT_ID = "aywugz";
+
+      // Read params. (Accepts both 'emai' or 'email', and 'id' or 'price')
+      const params = new URLSearchParams(location.search);
+      const emailParam = (params.get("emai") || params.get("email") || "").trim();
+      const priceParam = (params.get("id") || params.get("price") || "").trim();
+
+      // Gumroad expects price as a non-decimal integer (e.g., $12.45 -> 1245).
+      // Keep only digits to be safe.
+      const price = priceParam.replace(/[^\d]/g, "");
+      const email = emailParam;
+
+      // Build target URL
+      const gumroadBase = "https://gumroad.com/checkout";
+      const qs = new URLSearchParams({
+        product: PRODUCT_ID,
+        quantity: "1",
+        price,
+        email,
+      });
+      const target = gumroadBase + "?" + qs.toString();
+
+      // If both params exist, redirect immediately; otherwise show a helpful link.
+      function redirectNow() {
+        // Use replace() so the /pay page isn't kept in browser history
+        location.replace(target);
+      }
+
+      if (email && price) {
+        redirectNow();
+      } else {
+        // If something's missing, reveal a fallback link + hint
+        window.addEventListener("DOMContentLoaded", () => {
+          const msg = document.getElementById("msg");
+          const link = document.getElementById("fallback");
+          msg.textContent = "There's an Error, Please Contact Support";
+          link.href = target;
+          link.style.display = "inline-block";
+        });
+      }
+    })();
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <h1 id="msg">Redirecting to checkout…</h1>
+    <small id="hint"></small>
+    <noscript>
+      JavaScript is required for automatic redirection.
+      If you see this, enable JS and reload, or construct the link manually.
+    </noscript>
+  </div>
+</body>
+</html>

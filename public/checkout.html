@@ -14,67 +14,104 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f7f9fc;
-            color: #1a1a1a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: #f6f9fc;
+            color: #32325d;
             line-height: 1.5;
             font-size: 16px;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 700px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 40px 20px;
         }
 
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .left-column {
+            min-width: 0;
+        }
+
+        .right-column {
+            position: sticky;
+            top: 40px;
+        }
+
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 32px;
         }
 
         .header h1 {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 600;
-            color: #10b981;
+            color: #1a1f36;
             margin-bottom: 8px;
         }
 
         .header p {
-            color: #6b7280;
+            color: #6b7c93;
             font-size: 16px;
+            font-weight: 400;
         }
 
-        .confirmation-card {
+        .card {
             background: white;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            padding: 32px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            margin-bottom: 24px;
+            border-radius: 6px;
+            border: 1px solid #e6ebf1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            padding: 24px;
+            border-bottom: 1px solid #e6ebf1;
+            text-align: center;
         }
 
         .success-icon {
-            width: 64px;
-            height: 64px;
-            background: #10b981;
+            width: 48px;
+            height: 48px;
+            background: #00d924;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 24px;
+            margin: 0 auto 16px;
         }
 
-       .success-icon::after {
-    content: "";
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    background-color: green; /* Optional: set your background */
-    mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M20.285 6.708l-11.4 11.4-5.657-5.657 1.414-1.414 4.243 4.243 9.986-9.986z"/></svg>') no-repeat center;
-    -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M20.285 6.708l-11.4 11.4-5.657-5.657 1.414-1.414 4.243 4.243 9.986-9.986z"/></svg>') no-repeat center;
-    background-color: white;
-}
+        .success-icon::after {
+            content: "";
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M20.285 6.708l-11.4 11.4-5.657-5.657 1.414-1.414 4.243 4.243 9.986-9.986z"/></svg>') no-repeat center;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M20.285 6.708l-11.4 11.4-5.657-5.657 1.414-1.414 4.243 4.243 9.986-9.986z"/></svg>') no-repeat center;
+            background-color: white;
+        }
 
+        .card-header h2 {
+            color: #1a1f36;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .card-header p {
+            color: #6b7c93;
+            font-size: 14px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
 
         .section {
             margin-bottom: 24px;
@@ -87,27 +124,35 @@
         .section-title {
             font-size: 16px;
             font-weight: 600;
-            color: #1a1a1a;
+            color: #1a1f36;
             margin-bottom: 12px;
         }
 
         .info-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             padding: 8px 0;
+            border-bottom: 1px solid #f6f9fc;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
         }
 
         .info-label {
             font-weight: 500;
-            color: #6b7280;
+            color: #6b7c93;
             font-size: 14px;
+            flex: 1;
         }
 
         .info-value {
-            font-weight: 600;
-            color: #1a1a1a;
+            font-weight: 500;
+            color: #1a1f36;
             font-size: 14px;
+            text-align: right;
+            flex: 1;
         }
 
         .services-list {
@@ -115,42 +160,49 @@
             flex-wrap: wrap;
             gap: 6px;
             margin-top: 4px;
+            justify-content: flex-end;
         }
 
         .service-tag {
-            background: #eff6ff;
-            color: #3b82f6;
+            background: #f6f9fc;
+            color: #6b7c93;
             padding: 4px 8px;
-            border-radius: 4px;
+            border-radius: 3px;
             font-size: 12px;
             font-weight: 500;
+            border: 1px solid #e6ebf1;
         }
 
         .total-section {
-            background: #f9fafb;
-            border-radius: 8px;
-            padding: 16px;
-            margin-top: 16px;
+            background: #f6f9fc;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
         .total-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 18px;
+            font-size: 24px;
             font-weight: 600;
-            color: #1a1a1a;
+            color: #1a1f36;
+        }
+
+        .total-label {
+            font-size: 14px;
+            color: #6b7c93;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
 
         .loading {
             text-align: center;
-            padding: 40px;
-            color: #6b7280;
+            padding: 60px 20px;
+            color: #6b7c93;
         }
 
         .spinner {
-            border: 2px solid #f3f4f6;
-            border-top: 2px solid #3b82f6;
+            border: 2px solid #f6f9fc;
+            border-top: 2px solid #6772e5;
             border-radius: 50%;
             width: 24px;
             height: 24px;
@@ -164,71 +216,116 @@
         }
 
         .error {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #dc2626;
+            background: #fef7f0;
+            border: 1px solid #f3d2c1;
+            color: #a05e03;
             padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 24px;
+            border-radius: 6px;
+            margin-bottom: 20px;
             text-align: center;
+            font-weight: 500;
         }
 
-        .next-steps {
-            background: #f0f9ff;
-            border: 1px solid #0ea5e9;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 24px;
+        .notice {
+            background: #f0f4ff;
+            border: 1px solid #c7d7fe;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #4c51bf;
         }
 
-        .next-steps h3 {
-            color: #0369a1;
-            margin-bottom: 12px;
-            font-size: 16px;
-        }
-
-        .next-steps ul {
-            margin-left: 20px;
-            color: #0369a1;
-        }
-
-        .next-steps li {
-            margin-bottom: 8px;
+        .notice-title {
+            font-weight: 600;
+            margin-bottom: 4px;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 12px 16px;
+            border-radius: 6px;
             font-weight: 500;
             font-size: 16px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border: none;
+            transition: all 0.15s ease;
+            border: 1px solid transparent;
             text-decoration: none;
-            justify-content: center;
             width: 100%;
             margin-bottom: 12px;
         }
 
-        .btn-telegram {
-            background: #0088cc;
+        .btn-primary {
+            background: #6772e5;
             color: white;
+            border: 1px solid #6772e5;
         }
 
-        .btn-telegram:hover {
-            background: #006ba6;
+        .btn-primary:hover {
+            background: #5469d4;
+            border-color: #5469d4;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #6b7c93;
+            border: 1px solid #e6ebf1;
+        }
+
+        .btn-secondary:hover {
+            background: #f6f9fc;
+        }
+
+        .payment-section {
+            margin-bottom: 20px;
+        }
+
+        .next-steps {
+            background: white;
+            border: 1px solid #e6ebf1;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .next-steps h3 {
+            color: #1a1f36;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .next-steps ul {
+            margin-left: 20px;
+            color: #6b7c93;
+        }
+
+        .next-steps li {
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
         @media (max-width: 768px) {
             .container {
                 padding: 20px 15px;
             }
+
+            .checkout-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .right-column {
+                position: static;
+                order: -1;
+            }
             
-            .confirmation-card {
-                padding: 24px;
+            .card-body {
+                padding: 20px;
             }
             
             .info-row {
@@ -236,96 +333,156 @@
                 align-items: flex-start;
                 gap: 4px;
             }
+
+            .info-value {
+                text-align: left;
+            }
+
+            .services-list {
+                justify-content: flex-start;
+            }
+
+            .btn {
+                padding: 14px 16px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Application Confirmed</h1>
-            <p>Your application has been received and is being confirmed</p>
+            <h1>Payment confirmation</h1>
+            <p>Your application has been successfully submitted</p>
         </div>
 
         <div id="loading" class="loading">
             <div class="spinner"></div>
-            <p>Submitting your application...</p>
+            <p>Processing your application...</p>
         </div>
 
         <div id="error" class="error" style="display: none;"></div>
 
         <div id="confirmation-content" style="display: none;">
-            <div class="confirmation-card">
-                <div class="success-icon"></div>
-                
-                <div class="section">
-                    <div class="section-title">Application Summary</div>
-                    <div class="info-row">
-                        <span class="info-label">Services</span>
-                        <div id="services" class="services-list"></div>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Total Tracks</span>
-                        <span class="info-value" id="trackCount">-</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Promoted Tracks</span>
-                        <span class="info-value" id="promotedTracks">-</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Promotion Package</span>
-                        <span class="info-value" id="promoViews">-</span>
+            <div class="checkout-layout">
+                <div class="left-column">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="success-icon"></div>
+                            <h2>Application confirmed</h2>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="section">
+                                <div class="section-title">Order summary</div>
+                                <div class="info-row">
+                                    <span class="info-label">Services</span>
+                                    <div class="services-list" id="services"></div>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Total tracks</span>
+                                    <span class="info-value" id="trackCount">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Tracks for promotion</span>
+                                    <span class="info-value" id="promotedTracks">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Promotion package</span>
+                                    <span class="info-value" id="promoViews">-</span>
+                                </div>
+                            </div>
+
+                            <div class="section">
+                                <div class="section-title">Contact information</div>
+                                <div class="info-row">
+                                    <span class="info-label">Name</span>
+                                    <span class="info-value" id="fullName">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Email</span>
+                                    <span class="info-value" id="email">-</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Location</span>
+                                    <span class="info-value" id="location">-</span>
+                                </div>
+                            </div>
+
+                            <div class="section">
+                                <div class="section-title">Payment method</div>
+                                <div class="info-row">
+                                    <span class="info-label">Selected method</span>
+                                    <span class="info-value" id="paymentMethod">-</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">Contact Details</div>
-                    <div class="info-row">
-                        <span class="info-label">Name</span>
-                        <span class="info-value" id="fullName">-</span>
+                <div class="right-column">
+                    <div class="total-section">
+                        <div class="total-label">Total</div>
+                        <div class="total-item" id="totalPrice">$0.00</div>
                     </div>
-                    <div class="info-row">
-                        <span class="info-label">Email</span>
-                        <span class="info-value" id="email">-</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label">Location</span>
-                        <span class="info-value" id="location">-</span>
-                    </div>
-                </div>
 
-                <div class="section">
-                    <div class="section-title">Payment Details</div>
-                    <div class="info-row">
-                        <span class="info-label">Payment Method</span>
-                        <span class="info-value" id="paymentMethod">-</span>
+                    <!-- Payment Section -->
+                    <div id="paymentSection" class="payment-section" style="display: none;">
+                        <a id="payNowBtn" href="#" target="_blank" class="btn btn-primary">
+                            Complete payment now
+                        </a>
                     </div>
-                </div>
 
-                <div class="total-section">
-                    <div class="total-item">
-                        <span>Total Amount</span>
-                        <span id="totalPrice">$0.00</span>
+                    <!-- Crypto Payment Section -->
+                    <div id="cryptoPaymentSection" class="payment-section" style="display: none;">
+                        <a id="cryptoPayBtn" href="#" target="_blank" class="btn btn-primary">
+                            Pay with cryptocurrency
+                        </a>
                     </div>
+
+                    <div class="notice">
+                        <div class="notice-title">Check your email</div>
+                        A payment link and complete application details have been sent to your email address. Please check your inbox and spam folder.
+                    </div>
+
+                    <div id="nextSteps" class="next-steps">
+                        <h3>What happens next?</h3>
+                        <ul id="nextStepsList">
+                            <li>You'll receive a detailed email within 5 minutes with payment instructions</li>
+                            <li>Check both your inbox and spam folder for our email</li>
+                            <li>Complete your payment using the secure link provided</li>
+                        </ul>
+                    </div>
+
+                    <a href="https://t.me/trendmysong?text=Hello%2C%20I%20have%20a%20question%20regarding%20my%20application" target="_blank" class="btn btn-secondary">
+                        Contact support on Telegram
+                    </a>
                 </div>
             </div>
-
-            <div class="next-steps">
-                <h3>What happens next?</h3>
-                <ul>
-                    <li>You’ll receive an email within 5 minutes to complete your payment, please check your inbox now</li>
-                    <li>If the email is not in your inbox, please check your spam folder</li>
-                </ul>
-            </div>
-
-            <a href="https://t.me/trendmysong?text=Hello%2C%20I%20have%20a%20question%20regarding%20my%20application" target="_blank" class="btn btn-telegram">
-                Contact Live Chat Support on Telegram regarding your application
-            </a>
         </div>
     </div>
 
     <script>
         let orderData = {};
+        let webhookSubmitted = false;
         const WEBHOOK_URL = 'https://hook.eu2.make.com/lherkgw3qwdkcmq71g9uc3qjy2i4uh0h';
+
+        // Prevent page refresh/reload
+        window.addEventListener('beforeunload', function (e) {
+            if (!webhookSubmitted) {
+                return;
+            }
+            e.preventDefault();
+            e.returnValue = '';
+            return '';
+        });
+
+        // Handle back/forward navigation
+        window.addEventListener('popstate', function(e) {
+            if (webhookSubmitted) {
+                e.preventDefault();
+                window.location.href = '/';
+            }
+        });
 
         // Function to get URL parameters
         function getUrlParams() {
@@ -335,6 +492,21 @@
                 result[key] = value;
             }
             return result;
+        }
+
+        // Function to check if webhook was already submitted
+        function isWebhookAlreadySubmitted() {
+            const urlParams = getUrlParams();
+            const orderKey = `order_${urlParams.email}_${urlParams.totalPrice}_${urlParams.trackCount}`;
+            return sessionStorage.getItem(orderKey) === 'submitted';
+        }
+
+        // Function to mark webhook as submitted
+        function markWebhookSubmitted() {
+            const urlParams = getUrlParams();
+            const orderKey = `order_${urlParams.email}_${urlParams.totalPrice}_${urlParams.trackCount}`;
+            sessionStorage.setItem(orderKey, 'submitted');
+            webhookSubmitted = true;
         }
 
         // Function to format service names
@@ -354,15 +526,15 @@
 
         // Function to format promotion views
         function formatPromoViews(views) {
-            if (!views || views === '0') return 'No Promotion';
+            if (!views || views === '0') return 'No promotion';
             
             const numViews = parseInt(views);
             if (numViews >= 1000000) {
-                return `${numViews / 1000000}M Views Package`;
+                return `${numViews / 1000000}M views package`;
             } else if (numViews >= 1000) {
-                return `${numViews / 1000}K Views Package`;
+                return `${numViews / 1000}K views package`;
             }
-            return `${numViews} Views Package`;
+            return `${numViews} views package`;
         }
 
         // Function to format payment method
@@ -372,12 +544,26 @@
             const methodMap = {
                 'paypal': 'PayPal',
                 'card': 'Credit/Debit Card',
-                'crypto': 'Stablecoins (USDC, USDT)',
+                'crypto': 'Cryptocurrency',
                 'bank': 'Bank Transfer',
                 'wise': 'Wise Transfer'
             };
             
             return methodMap[method.toLowerCase()] || method;
+        }
+
+        // Function to generate payment URL
+        function generatePaymentURL(email, totalPrice) {
+            const baseUrl = 'http://app.trendmysong.com/pay';
+            const priceInCents = Math.round(parseFloat(totalPrice) * 100);
+            return `${baseUrl}?email=${encodeURIComponent(email)}&id=${priceInCents}`;
+        }
+
+        // Function to generate crypto payment URL
+        function generateCryptoURL(totalPrice) {
+            const baseUrl = 'https://app.trendmysong.com/crypto';
+            const priceInCents = Math.round(parseFloat(totalPrice) * 100);
+            return `${baseUrl}?id=${priceInCents}`;
         }
 
         // Function to send webhook to Make.com
@@ -417,13 +603,62 @@
             document.getElementById('loading').style.display = 'none';
         }
 
+        // Function to setup payment flow
+        function setupPaymentFlow(data) {
+            const paymentMethod = data.paymentMethod?.toLowerCase();
+            const paymentSection = document.getElementById('paymentSection');
+            const cryptoPaymentSection = document.getElementById('cryptoPaymentSection');
+            const nextStepsList = document.getElementById('nextStepsList');
+            
+            // Hide both payment sections initially
+            paymentSection.style.display = 'none';
+            cryptoPaymentSection.style.display = 'none';
+            
+            if (paymentMethod === 'paypal' || paymentMethod === 'card') {
+                // Show PayPal/Card Pay Now button
+                paymentSection.style.display = 'block';
+                const payNowBtn = document.getElementById('payNowBtn');
+                const paymentUrl = generatePaymentURL(data.email, data.totalPrice);
+                payNowBtn.href = paymentUrl;
+                
+                // Update next steps for immediate payment
+                nextStepsList.innerHTML = `
+                <li>Click the "Complete Payment Now" button above to make an instant payment.</li>
+                <li>If you prefer not to pay right away, you can do it later, we’ve already sent you an email with the payment link.</li>
+                <li>Once your payment is successful, you’ll receive a confirmation email and gain access to the login portal.</li>
+
+                `;
+            } else if (paymentMethod === 'crypto') {
+                // Show Crypto Pay Now button
+                cryptoPaymentSection.style.display = 'block';
+                const cryptoPayBtn = document.getElementById('cryptoPayBtn');
+                const cryptoUrl = generateCryptoURL(data.totalPrice);
+                cryptoPayBtn.href = cryptoUrl;
+                
+                // Update next steps for crypto payment
+                nextStepsList.innerHTML = `
+                    <li>Click the "Pay with cryptocurrency" button above to proceed</li>
+                    <li>If you prefer not to pay right away, you can do it later, we’ve already sent you an email with the crypto payment link</li>
+                    <li>You can pay using USDC, USDT, or other supported cryptocurrencies</li>
+                `;
+            } else {
+                // Show default next steps for other payment methods
+                nextStepsList.innerHTML = `
+                    <li>You'll receive a detailed email within 5 minutes with payment instructions</li>
+                    <li>Check both your inbox and spam folder for our email</li>
+                    <li>Complete your payment using the secure link provided</li>
+                    <li>Once payment is confirmed, we'll begin processing your order</li>
+                `;
+            }
+        }
+
         // Function to populate the confirmation page
         function populateConfirmation(data) {
             try {
                 orderData = data;
 
-                // Application Summary
-                document.getElementById('trackCount').textContent = data.trackCount === '1' ? '1 Track' : `${data.trackCount} Tracks`;
+                // Order Summary
+                document.getElementById('trackCount').textContent = data.trackCount === '1' ? '1 track' : `${data.trackCount} tracks`;
                 
                 const servicesContainer = document.getElementById('services');
                 const services = formatServices(data.services);
@@ -431,9 +666,9 @@
                     `<span class="service-tag">${service}</span>`
                 ).join('');
 
-                // Promoted tracks - use promotedTracks param or default to trackCount if promotion package is selected
+                // Promoted tracks
                 const promotedTracksCount = data.promotedTracks || (data.promoViews && data.promoViews !== '0' ? data.trackCount : '0');
-                document.getElementById('promotedTracks').textContent = promotedTracksCount === '1' ? '1 Track' : `${promotedTracksCount} Tracks`;
+                document.getElementById('promotedTracks').textContent = promotedTracksCount === '1' ? '1 track' : `${promotedTracksCount} tracks`;
 
                 document.getElementById('promoViews').textContent = formatPromoViews(data.promoViews);
 
@@ -446,6 +681,9 @@
                 document.getElementById('paymentMethod').textContent = formatPaymentMethod(data.paymentMethod);
                 
                 document.getElementById('totalPrice').textContent = `$${data.totalPrice}`;
+
+                // Setup payment flow
+                setupPaymentFlow(data);
 
                 // Show confirmation content
                 document.getElementById('loading').style.display = 'none';
@@ -478,15 +716,19 @@
                 return;
             }
 
+            // Check if webhook was already submitted
+            if (isWebhookAlreadySubmitted()) {
+                populateConfirmation(urlParams);
+                return;
+            }
+
             try {
-                // Automatically send webhook
                 const webhookResult = await sendWebhook(urlParams);
                 
                 if (webhookResult.success) {
-                    // Webhook sent successfully, show confirmation
+                    markWebhookSubmitted();
                     populateConfirmation(urlParams);
                 } else {
-                    // Webhook failed
                     throw new Error(webhookResult.error || 'Failed to submit application');
                 }
                 
