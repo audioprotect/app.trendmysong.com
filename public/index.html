@@ -248,7 +248,7 @@
               localStorage.setItem('username', payload.username);
 
               if (window.innerWidth <= 767) window.location.href = '/mobile';
-              else window.location.href = '/mobile';
+              else window.location.href = '/dashboard';
             } catch (e) {
               showError('login-error', 'Connection error. Please try again.');
               this.disabled = false;
