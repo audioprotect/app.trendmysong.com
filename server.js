@@ -54,82 +54,162 @@ const auth = new google.auth.GoogleAuth({
 const sheets = google.sheets({ version: 'v4', auth });
 const spreadsheetId = process.env.SHEET_ID; // Spreadsheet ID from environment
 
+
+// ---------------------- BCRYPT-------------------------------
+
+const bcrypt = require('bcrypt');
+const SALT_ROUNDS = 12;
+
+// Helpers to read portal rows and find a user by email
+async function getPortalRows(client) {
+  const res = await sheets.spreadsheets.values.get({
+    auth: client,
+    spreadsheetId,
+    range: 'portal!A:D', // A: email, B: password/hash, C: key, D: username
+  });
+  return res.data.values || [];
+}
+
+function findUserByEmail(rows, email) {
+  const idx = rows.findIndex(r => (r[0] || '').toLowerCase() === (email || '').toLowerCase());
+  if (idx === -1) return null;
+  const row = rows[idx];
+  return {
+    // 1-based index for Sheets write operations
+    rowIndex: idx + 1,
+    email: row[0] || '',
+    storedPass: row[1] || '',  // hash or legacy plain
+    key: row[2] || '',
+    username: row[3] || '',
+  };
+}
+
+
 // ------------------ LOGIN & AUTHENTICATION ------------------
 
-// Check if email exists and fetch password, key, username
+// Check if email exists and whether a password is set (no secrets returned)
 app.post('/check-email', async (req, res) => {
-  const { email } = req.body;
+  const { email } = req.body || {};
+  if (!email) return res.status(400).json({ error: 'Email required' });
 
   try {
     const client = await auth.getClient();
+    const rows = await getPortalRows(client);
+    const user = findUserByEmail(rows, email);
 
-    // Get email list from "portal" sheet
-    const result = await sheets.spreadsheets.values.get({
-      auth: client,
-      spreadsheetId,
-      range: 'portal!A:A',
+    if (!user) return res.json({ exists: false });
+
+    const hasPassword = !!user.storedPass;
+    return res.json({
+      exists: true,
+      hasPassword,
+      username: user.username || null, // optional (display only)
+      // DO NOT return password or key here
     });
-
-    const emailList = result.data.values || [];
-    const emailRow = emailList.findIndex(row => row[0] === email);
-
-    if (emailRow !== -1) {
-      // Get password (col B), key (col C), username (col D)
-      const [passwordResult, keyResult, usernameResult] = await Promise.all([
-        sheets.spreadsheets.values.get({ auth: client, spreadsheetId, range: `portal!B${emailRow + 1}:B${emailRow + 1}` }),
-        sheets.spreadsheets.values.get({ auth: client, spreadsheetId, range: `portal!C${emailRow + 1}:C${emailRow + 1}` }),
-        sheets.spreadsheets.values.get({ auth: client, spreadsheetId, range: `portal!D${emailRow + 1}:D${emailRow + 1}` }),
-      ]);
-
-      const password = passwordResult.data.values?.[0]?.[0] || null;
-      const key = keyResult.data.values?.[0]?.[0] || null;
-      const username = usernameResult.data.values?.[0]?.[0] || null;
-
-      res.json({ exists: true, password, key, username });
-    } else {
-      res.json({ exists: false });
-    }
-  } catch (error) {
-    console.error('Error checking email:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+  } catch (err) {
+    console.error('Error checking email:', err);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-// Update password for a given email
-app.post('/set-password', async (req, res) => {
-  const { email, password } = req.body;
+
+// Requires: bcrypt, getPortalRows(), findUserByEmail() helpers from earlier
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body || {};
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email and password required' });
+  }
 
   try {
     const client = await auth.getClient();
+    const rows = await getPortalRows(client); // reads portal!A:D
+    const user = findUserByEmail(rows, email);
+    // user = { rowIndex, email, storedPass, key, username }
 
-    const result = await sheets.spreadsheets.values.get({
+    // 1) Email check
+    if (!user || !user.storedPass) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // 2) Username gate FIRST (no hashing/writes before this)
+    if (user.username !== 'TMSP') {
+      // Fail closed — don’t leak whether password is right or wrong
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    // 3) Password check
+    let ok = false;
+    const isBcryptHash =
+      user.storedPass.startsWith('$2a$') ||
+      user.storedPass.startsWith('$2b$') ||
+      user.storedPass.startsWith('$2y$');
+
+    if (isBcryptHash) {
+      ok = await bcrypt.compare(password, user.storedPass);
+    } else {
+      // legacy plain text
+      ok = password === user.storedPass;
+      // Only upgrade to bcrypt *after* username gate passed AND password correct
+      if (ok) {
+        const newHash = await bcrypt.hash(password, SALT_ROUNDS);
+        await sheets.spreadsheets.values.update({
+          auth: client,
+          spreadsheetId,
+          range: `portal!B${user.rowIndex}:B${user.rowIndex}`,
+          valueInputOption: 'RAW',
+          resource: { values: [[newHash]] },
+        });
+      }
+    }
+
+    if (!ok) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    // Success — safe to return identity payload
+    return res.json({ username: user.username, key: user.key });
+  } catch (err) {
+    console.error('Error during login:', err);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+// Update password for a given email
+// Set/initialize password for an existing user (hash it)
+app.post('/set-password', async (req, res) => {
+  const { email, password } = req.body || {};
+  if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
+  if (password.length < 8) return res.status(400).json({ error: 'Weak password' });
+
+  try {
+    const client = await auth.getClient();
+    const rows = await getPortalRows(client);
+    const user = findUserByEmail(rows, email);
+    if (!user) return res.status(404).json({ error: 'Email not found' });
+
+    // 🚨 Username gate BEFORE password hashing
+    if (user.username !== 'TMSP') {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+
+    const hash = await bcrypt.hash(password, SALT_ROUNDS);
+
+    // Update password hash
+    await sheets.spreadsheets.values.update({
       auth: client,
       spreadsheetId,
-      range: 'portal!A:A',
+      range: `portal!B${user.rowIndex}:B${user.rowIndex}`,
+      valueInputOption: 'RAW',
+      resource: { values: [[hash]] },
     });
 
-    const emailList = result.data.values || [];
-    const emailRow = emailList.findIndex(row => row[0] === email);
-
-    if (emailRow !== -1) {
-      const range = `portal!B${emailRow + 1}:B${emailRow + 1}`;
-      const resource = { values: [[password]] };
-
-      await sheets.spreadsheets.values.update({
-        auth: client,
-        spreadsheetId,
-        range,
-        valueInputOption: 'RAW',
-        resource,
-      });
-
-      res.json({ success: true });
-    } else {
-      res.status(404).json({ error: 'Email not found' });
-    }
-  } catch (error) {
-    console.error('Error setting password:', error);
-    res.status(500).json({ error: 'Failed to update password' });
+    // Return identity payload so the client can store/display
+    return res.json({ success: true, username: user.username, key: user.key });
+  } catch (err) {
+    console.error('Error setting password:', err);
+    return res.status(500).json({ error: 'Failed to update password' });
   }
 });
 
