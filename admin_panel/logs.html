@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Logs — Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <style>
+    :root{
+      --bg:#f5f7fb;--surface:#fff;--ink:#0f172a;--muted:#64748b;--border:#e5e7eb;
+      --primary:#2563eb;--primary-2:#1d4ed8;--ring:0 0 0 3px rgba(37,99,235,.14);
+      --good:#10b981;--good-bg:#ecfdf5;--good-br:#a7f3d0;
+      --bad:#ef4444;--bad-bg:#fee2e2;--bad-br:#fecaca;
+      --shadow:0 1px 2px rgba(0,0,0,.05),0 6px 20px rgba(0,0,0,.06);
+      --radius:12px; --fs-14:14.5px; --fs-15:15.5px;
+      --table-head:#f3f4f6;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;background:var(--bg);color:var(--ink);
+      font:400 var(--fs-15)/1.5 arial;
+      min-height:100vh;display:flex;flex-direction:column
+    }
+
+    /* Header */
+    .header{background:var(--surface);border-bottom:1px solid var(--border);box-shadow:var(--shadow);position:sticky;top:0;z-index:10}
+    .header-inner{max-width:1280px;margin:0 auto;padding:16px 20px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:400}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--border);border-radius:10px;background:var(--surface);font-weight:600;color:var(--ink);text-decoration:none;cursor:pointer}
+    .btn:hover{background:#f8fafc}
+    .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .btn.primary:hover{background:var(--primary-2)}
+    .icon{width:18px;height:18px}
+    .display-hidden {
+  display: none !important;
+}
+    /* Page */
+    .wrap{max-width:1280px;margin:0 auto;padding:22px 20px;flex:1}
+    .title{font-size:22px;font-weight:400;margin:0 0 12px}
+
+    /* Card */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .card-body{padding:14px}
+
+    /* Messages + spinner */
+    .msg{margin:10px 0;padding:10px 12px;border:1px solid var(--bad-br);background:var(--bad-bg);color:#991b1b;border-radius:10px;display:none}
+    .toolbar{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-bottom:8px}
+    .spinner{width:18px;height:18px;border:2px solid rgba(0,0,0,.15);border-top:2px solid var(--primary);border-radius:50%;animation:spin 1s linear infinite;display:none}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* TABLE – FIXED LAYOUT + FIXED COL WIDTHS */
+    .table-outer{border-top:1px solid var(--border)}
+    .table-wrap{
+      overflow:auto;
+      max-height:calc(100vh - 280px);
+      background:#fff;border-top-left-radius:12px;border-top-right-radius:12px
+    }
+    table{width:100%;border-collapse:collapse;table-layout:fixed}
+    colgroup col:nth-child(1){width:180px} /* Request */
+    colgroup col:nth-child(2){width:auto}  /* Description (flex) */
+    colgroup col:nth-child(3){width:210px} /* Timestamp */
+    colgroup col:nth-child(4){width:140px} /* Status */
+
+    thead th{
+      position:sticky;top:0;background:var(--table-head);border-bottom:1px solid var(--border);
+      font-size:13px;font-weight:600;color:#0f172a;padding:9px 10px;text-align:left;user-select:none;
+      z-index:1
+    }
+    tbody td{
+      padding:9px 10px;border-bottom:1px solid var(--border);font-size:var(--fs-14);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+    }
+    tbody tr:hover{background:#fafafa}
+
+    .status{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:2px 8px;font-size:12px}
+    .status.good{background:var(--good-bg);border-color:var(--good-br);color:#065f46}
+    .status.bad{background:var(--bad-bg);border-color:var(--bad-br);color:#991b1b}
+
+    .meta{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;color:var(--muted);font-size:13px;border-top:1px solid var(--border)}
+
+    /* Mobile: simple stacked cards */
+    .mobile{display:none}
+    @media(max-width:900px){
+      .desktop{display:none}
+      .mobile{display:grid;gap:8px}
+      .mcard{border:1px solid var(--border);border-radius:10px;padding:10px;background:#fff;display:grid;gap:6px}
+      .mrow{display:flex;justify-content:space-between;gap:10px}
+      .muted{color:var(--muted);font-size:12px}
+    }
+  </style>
+</head>
+<body>
+  <!-- Session check -->
+  <script>
+    (async()=>{try{const r=await fetch('/api/admin/session',{credentials:'include'});if(!r.ok||!(await r.json()).ok)location.replace('/admin.html')}catch{location.replace('/admin.html')}})();
+  </script>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>
+        </svg>
+        <strong>Admin Logs</strong>
+      </div>
+      <div>
+        <button id="refreshBtn" class="btn primary display-hidden" type="button" title="Reload">Refresh</button>
+        <button id="backBtn" class="btn primary" type="button">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg> Back to Panel
+        </button>
+        <script>
+  document.getElementById('backBtn').addEventListener('click', () => {
+    if (document.referrer && window.history.length > 1) {
+      // If there's a previous page, go back
+      window.history.back();
+    } else {
+      // Otherwise redirect to /admin/panel
+      window.location.href = '/admin/panel';
+    }
+  });
+</script>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1 class="title">Latest Admin Activity</h1>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="toolbar">
+          <div id="loading" class="spinner"></div>
+        </div>
+
+        <div id="msg" class="msg"></div>
+
+        <!-- Desktop table -->
+        <div class="table-outer desktop">
+          <div class="table-wrap" id="tableWrap">
+            <table id="t">
+              <colgroup>
+                <col /><col /><col /><col />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>Request</th>
+                  <th>Description</th>
+                  <th>Timestamp</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Mobile cards -->
+        <div class="mobile" id="cards"></div>
+
+        <div class="meta">
+          <div><strong id="rowCount">0</strong> log entries</div>
+          <div id="lastUpdated"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Sign out
+    document.addEventListener('click', async (e)=>{
+      if(e.target.closest('#logoutBtn')){
+        try{await fetch('/api/admin/logout',{method:'POST',credentials:'include'})}catch{}
+        location.replace('/admin.html')
+      }
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', load);
+
+    // Utils
+    const $=s=>document.querySelector(s);
+    const tableBody=$('#t tbody');
+    const cards=$('#cards');
+    const rowCount=$('#rowCount');
+    const lastUpdated=$('#lastUpdated');
+    const loading=$('#loading');
+    const msg=$('#msg');
+
+    function parseDate(val){
+      if(val==null||val==='') return null;
+      // API sends ISO if possible; still handle numbers/strings defensively
+      if(typeof val==='number'){ const epoch=Date.UTC(1899,11,30); return new Date(epoch+val*86400000) }
+      const d=new Date(val); return isNaN(d)?null:d;
+    }
+    function ts(val){ const d=parseDate(val); return d?d.getTime():-Infinity }
+    function fmtTs(val){
+      const d=parseDate(val); if(!d) return '—';
+      const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), da=String(d.getDate()).padStart(2,'0');
+      const hh=String(d.getHours()).padStart(2,'0'), mm=String(d.getMinutes()).padStart(2,'0');
+      return `${y}-${m}-${da} ${hh}:${mm}`;
+    }
+    function statusClass(s){
+      const v=String(s||'').toLowerCase();
+      if(/ok|success|approved|done|completed/.test(v)) return 'good';
+      if(/fail|error|rejected|denied/.test(v)) return 'bad';
+      return '';
+    }
+
+    let raw=[]; // array of {request, description, timestamp, status, ...}
+
+    function renderTable(view){
+      tableBody.innerHTML='';
+      for(const r of view){
+        const tr=document.createElement('tr');
+        const td=t=>{const d=document.createElement('td'); d.textContent=t??'—'; return d}
+        tr.appendChild(td(r.request));
+        tr.appendChild(td(r.description));
+        tr.appendChild(td(fmtTs(r.timestamp)));
+        const st=document.createElement('td');
+        const pill=document.createElement('span');
+        pill.className='status '+statusClass(r.status);
+        pill.textContent=r.status || '—';
+        st.appendChild(pill);
+        tr.appendChild(st);
+        tableBody.appendChild(tr);
+      }
+    }
+
+    function renderCards(view){
+      cards.innerHTML='';
+      for(const r of view){
+        const card=document.createElement('div'); card.className='mcard';
+        const top=document.createElement('div'); top.className='mrow';
+        top.innerHTML=`<strong>${r.request||'—'}</strong><span class="status ${statusClass(r.status)}">${r.status||'—'}</span>`;
+        const d1=document.createElement('div'); d1.textContent=r.description||'—';
+        const d2=document.createElement('div'); d2.className='mrow'; d2.innerHTML=`<span class="muted">Timestamp</span><span>${fmtTs(r.timestamp)}</span>`;
+        card.append(top,d1,d2);
+        cards.appendChild(card);
+      }
+    }
+
+    function renderAll(){
+      // sort latest → oldest by timestamp
+      const view=[...raw].sort((a,b)=>ts(b.timestamp)-ts(a.timestamp));
+      renderTable(view);
+      renderCards(view);
+      rowCount.textContent=String(view.length);
+      lastUpdated.textContent='Updated: '+new Date().toLocaleString();
+    }
+
+    async function load(){
+      loading.style.display='inline-block'; msg.style.display='none';
+      try{
+        const r=await fetch('/admin-logs',{cache:'no-store'});
+        if(!r.ok) throw new Error('Failed to load /admin-logs');
+        const j=await r.json();
+        raw = Array.isArray(j.data) ? j.data.map(x=>({
+          request: x.request ?? x.Request ?? x[0],
+          description: x.description ?? x.Description ?? x[1],
+          timestamp: x.timestamp ?? x.Timestamp ?? x[2],
+          status: x.status ?? x.Status ?? x[4],
+        })) : [];
+        renderAll();
+      }catch(e){
+        console.error(e);
+        msg.textContent='Error loading admin logs. Please try again.';
+        msg.style.display='block';
+      }finally{
+        loading.style.display='none';
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>

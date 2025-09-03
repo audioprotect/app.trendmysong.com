@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Unblock User — Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <style>
+    :root{
+      --bg:#f8fafc;--surface:#ffffff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+      --primary:#3b82f6;--primary-hover:#2563eb;
+      --info:#0ea5e9;--info-hover:#0284c7;
+      --success:#10b981;--success-bg:#d1fae5;--success-border:#a7f3d0;
+      --error:#ef4444;--error-bg:#fee2e2;--error-border:#fecaca;
+      --shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+      --shadow-lg:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06);
+      --radius:8px;--focus-ring:0 0 0 3px rgba(59,130,246,.1);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+    .header{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem;box-shadow:var(--shadow)}
+    .header-content{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    .brand{display:flex;align-items:center;gap:.75rem;font-weight:700;font-size:1.25rem}
+    .brand-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--primary),var(--primary-hover));border-radius:var(--radius);display:flex;align-items:center;justify-content:center;color:#fff}
+    .header-actions{display:flex;gap:.5rem;align-items:center}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.625rem 1rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);text-decoration:none;font-weight:500;font-size:.875rem;cursor:pointer;transition:all .15s ease}
+    .btn:hover{background:#f8fafc;border-color:#cbd5e1}
+    .btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+    .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+    .btn.primary:hover:not(:disabled){background:var(--primary-hover);border-color:var(--primary-hover)}
+    .btn.info{background:var(--info);border-color:var(--info);color:#fff}
+    .btn.info:hover:not(:disabled){background:var(--info-hover);border-color:var(--info-hover)}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .container{max-width:900px;margin:0 auto;padding:2rem 1rem;flex:1}
+    .page-header{margin-bottom:2rem}
+    .page-title{font-size:2rem;font-weight:700;margin:0 0 .5rem}
+    .page-description{color:var(--muted);margin:0}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;box-shadow:var(--shadow)}
+    .form{display:grid;gap:1.25rem}
+    .form-row{display:grid;gap:1rem;grid-template-columns:1fr}
+    @media (min-width:768px){.form-row.two-columns{grid-template-columns:1fr 1fr}}
+    .form-group{display:flex;flex-direction:column}
+    .form-label{font-weight:600;font-size:.875rem;margin-bottom:.5rem}
+    .required{color:var(--error);margin-left:2px}
+    .form-input,.form-textarea{width:100%;padding:.75rem;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);color:var(--text);font-size:.875rem;transition:all .15s ease}
+    .form-input:focus,.form-textarea:focus{outline:none;border-color:var(--primary);box-shadow:var(--focus-ring)}
+    .form-textarea{min-height:110px;resize:vertical}
+    .form-hint{color:var(--muted);font-size:.75rem;margin-top:.5rem;line-height:1.4}
+    .form-actions{display:flex;gap:1rem;flex-wrap:wrap;padding-top:1rem;border-top:1px solid var(--border)}
+    .message{padding:1rem;border-radius:var(--radius);border:1px solid;font-size:.875rem;margin:1rem 0}
+    .message.success{background:var(--success-bg);border-color:var(--success-border);color:#065f46}
+    .message.error{background:var(--error-bg);border-color:var(--error-border);color:#991b1b}
+    .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top:2px solid white;border-radius:50%;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:1rem;z-index:50}
+    .modal-backdrop.show{display:flex}
+    .modal{width:100%;max-width:560px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow-lg);padding:1.25rem}
+    .modal header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+    .modal-title{font-weight:700;font-size:1.125rem;margin:0}
+    .modal-body{display:grid;gap:1rem;padding-top:.5rem}
+    .modal-actions{display:flex;gap:.75rem;justify-content:flex-end;padding-top:1rem;border-top:1px solid var(--border)}
+    .close-x{background:transparent;border:none;font-size:1.25rem;line-height:1;cursor:pointer;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <script>
+    (async () => {
+      try {
+        const r = await fetch('/api/admin/session', { credentials: 'include' });
+        if (!r.ok || !(await r.json()).ok) location.replace('/admin.html');
+      } catch { location.replace('/admin.html'); }
+    })();
+  </script>
+
+  <header class="header">
+    <div class="header-content">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 12h18M12 3v18" />
+          </svg>
+        </div>
+        <span>Unblock User</span>
+      </div>
+      <div class="header-actions">
+        <a class="btn" href="/admin/panel/index.html">Dashboard</a>
+        <button id="logoutBtn" class="btn primary" type="button">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="page-header">
+      <h1 class="page-title">Unblock Existing User</h1>
+      <p class="page-description">Restore a user’s access. This action re-enables services for the account.</p>
+      <p><strong>Read Before Submitting</strong></p>
+      <p class="page-description">All unblock actions are automatically reported to the administration.</p>
+    </div>
+
+    <div class="card">
+      <form id="unblockUserForm" class="form" novalidate>
+        <div class="form-row two-columns">
+          <div class="form-group">
+            <label class="form-label" for="userId">User ID<span class="required">*</span></label>
+            <input id="userId" class="form-input" type="text" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address<span class="required">*</span></label>
+            <input id="email" class="form-input" type="email" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reason">Reason for Unblocking<span class="required">*</span></label>
+          <textarea id="reason" class="form-textarea" required></textarea>
+        </div>
+
+        <div id="messageContainer"></div>
+
+        <div class="form-actions">
+          <button id="submitBtn" class="btn info" type="submit">
+            <span>Unblock User</span>
+          </button>
+          <a class="btn" href="/admin/panel/index.html">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div id="confirmModal" class="modal-backdrop">
+    <div class="modal">
+      <header>
+        <h2 class="modal-title">Confirm Unblock</h2>
+        <button type="button" class="close-x" id="closeModalBtn">&times;</button>
+      </header>
+      <div class="modal-body">
+        <p class="page-description"><strong>Note:</strong> Please make sure unblocking complies with policy.</p>
+        <div id="reviewDetails"></div>
+        <div id="modalMessage"></div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="cancelConfirmBtn">Cancel</button>
+        <button type="button" class="btn info" id="confirmUnblockBtn">Confirm & Unblock</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    const messageContainer=document.getElementById('messageContainer');
+    const submitBtn=document.getElementById('submitBtn');
+    const submitBtnText=submitBtn.querySelector('span');
+
+    const confirmModal=document.getElementById('confirmModal');
+    const closeModalBtn=document.getElementById('closeModalBtn');
+    const cancelConfirmBtn=document.getElementById('cancelConfirmBtn');
+    const confirmUnblockBtn=document.getElementById('confirmUnblockBtn');
+    const reviewDetails=document.getElementById('reviewDetails');
+    const modalMessage=document.getElementById('modalMessage');
+
+    function setLoading(loading){
+      if(loading){
+        submitBtn.disabled=true;
+        submitBtnText.textContent='Submitting...';
+      }else{
+        submitBtn.disabled=false;
+        submitBtnText.textContent='Unblock User';
+      }
+    }
+    function showMessage(t,ty){messageContainer.innerHTML=`<div class="message ${ty}">${t}</div>`;}
+    function clearMessage(){messageContainer.innerHTML='';}
+    function openModal(){confirmModal.classList.add('show');}
+    function closeModal(){confirmModal.classList.remove('show');reviewDetails.textContent='';}
+
+    function escapeHtml(str){return str.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));}
+
+    document.getElementById('logoutBtn').addEventListener('click',async()=>{
+      try{await fetch('/api/admin/logout',{method:'POST',credentials:'include'});}catch(_){}
+      location.replace('/admin.html');
+    });
+
+    document.getElementById('unblockUserForm').addEventListener('submit',e=>{
+      e.preventDefault();clearMessage();
+      const u=document.getElementById('userId').value.trim();
+      const em=document.getElementById('email').value.trim();
+      const r=document.getElementById('reason').value.trim();
+      if(!u||!em||!r)return showMessage('All fields are required.','error');
+      reviewDetails.innerHTML=`<div><strong>User ID:</strong> ${escapeHtml(u)}</div><div><strong>Email:</strong> ${escapeHtml(em)}</div><div><strong>Reason:</strong> ${escapeHtml(r)}</div>`;
+      openModal();
+    });
+
+    async function finalizeUnblock(){
+      clearMessage();
+      const u=document.getElementById('userId').value.trim();
+      const em=document.getElementById('email').value.trim();
+      const r=document.getElementById('reason').value.trim();
+      closeModal();setLoading(true);
+      const payload={request:"unblock user",user_id:u,email:em,reason:r,requested_at_iso:new Date().toISOString()};
+      try{
+        const res = await fetch('/api/admin/unblock', {method:'POST',headers:{'Content-Type':'application/json', credentials: 'include'},body:JSON.stringify(payload)});
+        if(res.status!==200){showMessage(`Webhook failed (HTTP ${res.status})`,'error');return;}
+        const text=(await res.text()).trim();
+        if(text==="approved"){showMessage('User unblocked successfully.','success');document.getElementById('unblockUserForm').reset();}
+        else{showMessage(`Unexpected response: "${text}"`,'error');}
+      }catch{showMessage('Network error. Try again.','error');}
+      finally{setLoading(false);}
+    }
+
+    confirmUnblockBtn.addEventListener('click',finalizeUnblock);
+    closeModalBtn.addEventListener('click',closeModal);
+    cancelConfirmBtn.addEventListener('click',closeModal);
+  </script>
+</body>
+</html>

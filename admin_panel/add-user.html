@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Add User — Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --success: #10b981;
+      --success-bg: #d1fae5;
+      --success-border: #a7f3d0;
+      --error: #ef4444;
+      --error-bg: #fee2e2;
+      --error-border: #fecaca;
+      --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-lg: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+      --radius: 8px;
+      --focus-ring: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    * { box-sizing: border-box; }
+    
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem;
+      box-shadow: var(--shadow);
+    }
+    
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+    }
+    
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.625rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .btn:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    
+    .btn:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+    
+    .btn.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+    
+    .btn.primary:hover:not(:disabled) {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+    
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    
+    .badge {
+      background: #dbeafe;
+      color: #1e40af;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    /* Main Content */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      flex: 1;
+    }
+    
+    .page-header {
+      margin-bottom: 2rem;
+    }
+    
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem 0;
+      color: var(--text);
+    }
+    
+    .page-description {
+      color: var(--muted);
+      margin: 0;
+    }
+    
+    /* Card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+    
+    /* Form */
+    .form {
+      display: grid;
+      gap: 1.5rem;
+    }
+    
+    .form-row {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1fr;
+    }
+    
+    @media (min-width: 768px) {
+      .form-row.two-columns {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .form-label {
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    
+    .form-label .required {
+      color: var(--error);
+      margin-left: 2px;
+    }
+    
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.875rem;
+      transition: all 0.15s ease;
+    }
+    
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: var(--focus-ring);
+    }
+    
+    .form-textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    .form-hint {
+      color: var(--muted);
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+      line-height: 1.4;
+    }
+    
+    /* Messages */
+    .message {
+      padding: 1rem;
+      border-radius: var(--radius);
+      border: 1px solid;
+      font-size: 0.875rem;
+      margin: 1rem 0;
+    }
+    
+    .message.success {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+      color: #065f46;
+    }
+    
+    .message.error {
+      background: var(--error-bg);
+      border-color: var(--error-border);
+      color: #991b1b;
+    }
+    
+    /* Form Actions */
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    
+    /* Loading Spinner */
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 640px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+      
+      .header-content {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .header-actions {
+        justify-content: center;
+      }
+      
+      .brand {
+        justify-content: center;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Session check -->
+<script>
+  (function () {
+    const LOGIN_URL = '/admin.html'; // <-- your real login page
+    const SESSION_URL = '/api/admin/session';
+
+    // Hide the page until we confirm auth
+    document.documentElement.classList.add('auth-checking');
+
+    const redirectToLogin = () => {
+      // Stop rendering and go to login
+      try { window.stop(); } catch (_) {}
+      location.replace(LOGIN_URL);
+    };
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000); // safety timeout
+
+    fetch(SESSION_URL, {
+      credentials: 'include',
+      cache: 'no-store',
+      redirect: 'follow',     // default, but explicit
+      signal: controller.signal
+    }).then(async (res) => {
+      clearTimeout(timeout);
+
+      // 1) Non-2xx → login
+      if (!res.ok) return redirectToLogin();
+
+      // 2) If we got redirected to login URL, bail (fetch follows redirects; check final URL)
+      try {
+        const finalURL = new URL(res.url, location.origin);
+        const loginURL = new URL(LOGIN_URL, location.origin);
+        if (finalURL.pathname === loginURL.pathname) return redirectToLogin();
+      } catch (_) {}
+
+      // 3) If not JSON, assume not authorized (many servers send HTML or plain text)
+      const ct = (res.headers.get('content-type') || '').toLowerCase();
+      if (!ct.includes('application/json')) return redirectToLogin();
+
+      // 4) Parse JSON and require { ok: true }
+      let data = null;
+      try { data = await res.json(); } catch { /* ignore */ }
+      if (!data || data.ok !== true) return redirectToLogin();
+
+      // Authorized → show page
+      document.documentElement.classList.remove('auth-checking');
+    }).catch(() => {
+      // Network/timeout → go to login
+      redirectToLogin();
+    });
+  })();
+</script>
+<style>
+  /* Prevent flicker of protected content */
+  html.auth-checking body { display: none !important; }
+</style>
+<noscript><meta http-equiv="refresh" content="0;url=/admin.html"></noscript>
+
+<style>
+  html.auth-checking body { visibility: hidden; }
+</style>
+
+  <header class="header">
+    <div class="header-content">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <line x1="19" y1="8" x2="19" y2="14"/>
+            <line x1="22" y1="11" x2="16" y2="11"/>
+          </svg>
+        </div>
+        <span>Add User</span>
+      </div>
+      <div class="header-actions">
+        <a class="btn" href="/admin/panel/index.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="9"/>
+            <rect x="14" y="3" width="7" height="5"/>
+            <rect x="14" y="12" width="7" height="9"/>
+            <rect x="3" y="16" width="7" height="5"/>
+          </svg>
+          Dashboard
+        </a>
+        <button id="logoutBtn" class="btn primary" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16,17 21,12 16,7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="page-header">
+      <h1 class="page-title">Add New User</h1>
+      <p class="page-description">Create a new user account with access permissions and billing information.</p>
+    </div>
+
+    <div class="card">
+      <form id="addUserForm" class="form" novalidate>
+        <div class="form-row two-columns">
+          <div class="form-group">
+            <label class="form-label" for="email">
+              Email Address<span class="required">*</span>
+            </label>
+            <input id="email" class="form-input" type="email" placeholder="user@example.com" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="totalPaid">
+              Total Paid Amount (USD)<span class="required">*</span>
+            </label>
+            <input id="totalPaid" class="form-input" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required />
+          </div>
+        </div>
+
+        <div class="form-row two-columns">
+          <div class="form-group">
+            <label class="form-label" for="trackCount">
+              Track Count<span class="required">*</span>
+            </label>
+            <input id="trackCount" class="form-input" type="number" min="1" max="1000" step="1" placeholder="e.g., 25" required />
+            <div class="form-hint">Must be between 1 and 1000 tracks</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="date">
+              Date<span class="required">*</span>
+            </label>
+            <input id="date" class="form-input" type="date" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="services">
+              Services<span class="required">*</span>
+            </label>
+            <input id="services" class="form-input" type="text" placeholder='e.g., "YT SM PM DSP"' required />
+            <div class="form-hint">
+              <strong>Available service codes:</strong> 
+              <strong>YT</strong> (YouTube Content ID), 
+              <strong>DSP</strong> (Streaming Platforms), 
+              <strong>PM</strong> (Promotion), 
+              <strong>SM</strong> (Social Media). 
+              Separate multiple codes with spaces.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row two-columns">
+          <div class="form-group">
+            <label class="form-label" for="paymentMethod">
+              Payment Method<span class="required">*</span>
+            </label>
+            <input id="paymentMethod" class="form-input" type="text" placeholder="e.g., Visa, MasterCard, SEPA, Cash" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="paymentPlatform">
+              Payment Platform<span class="required">*</span>
+            </label>
+            <select id="paymentPlatform" class="form-select" required>
+              <option value="" disabled selected>Select a platform</option>
+              <option value="Gumroad">Gumroad</option>
+              <option value="Patreon">Patreon</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="Crypto">Crypto</option>
+              <option value="PayPal">PayPal</option>
+              <option value="Paddle">Paddle</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="messageContainer"></div>
+
+        <div class="form-actions">
+          <button id="submitBtn" class="btn primary" type="submit">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <line x1="19" y1="8" x2="19" y2="14"/>
+              <line x1="22" y1="11" x2="16" y2="11"/>
+            </svg>
+            <span>Add User</span>
+          </button>
+          <a class="btn" href="/admin/panel/index.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5m7-7l-7 7 7 7"/>
+            </svg>
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    // ===== Config =====
+
+    // ===== Helpers =====
+    const allowedCodes = new Set(["YT", "DSP", "PM", "SM"]);
+    const messageContainer = document.getElementById('messageContainer');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitBtnText = submitBtn.querySelector('span');
+    const submitBtnIcon = submitBtn.querySelector('svg');
+
+    function setLoading(loading) {
+      if (loading) {
+        submitBtn.disabled = true;
+        submitBtnIcon.style.display = 'none';
+        submitBtnText.textContent = 'Submitting...';
+        const spinner = document.createElement('div');
+        spinner.className = 'spinner';
+        spinner.setAttribute('aria-hidden', 'true');
+        submitBtn.insertBefore(spinner, submitBtnText);
+      } else {
+        submitBtn.disabled = false;
+        const spinner = submitBtn.querySelector('.spinner');
+        if (spinner) spinner.remove();
+        submitBtnIcon.style.display = 'block';
+        submitBtnText.textContent = 'Add User';
+      }
+    }
+
+    function showMessage(text, type) {
+      messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
+    }
+
+    function clearMessage() {
+      messageContainer.innerHTML = '';
+    }
+
+    function parseServices(str) {
+      const tokens = (str || "").toUpperCase().trim().split(/\s+/).filter(Boolean);
+      const invalid = tokens.filter(t => !allowedCodes.has(t));
+      return { tokens, invalid, unique: Array.from(new Set(tokens)) };
+    }
+
+    function validEmail(v) { 
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); 
+    }
+
+    // ===== Session: logout =====
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      try { 
+        await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' }); 
+      } catch (_) {}
+      location.replace('/admin.html');
+    });
+
+    // ===== Form handling =====
+    document.getElementById('addUserForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessage();
+
+      const email = document.getElementById('email').value.trim();
+      const totalPaid = document.getElementById('totalPaid').value.trim();
+      const trackCount = document.getElementById('trackCount').value.trim();
+      const date = document.getElementById('date').value.trim();
+      const servicesRaw = document.getElementById('services').value.trim();
+      const paymentMethod = document.getElementById('paymentMethod').value.trim();
+      const paymentPlatform = document.getElementById('paymentPlatform').value;
+
+      // Basic validations
+      if (!email || !validEmail(email)) {
+        return showMessage('Please enter a valid email address.', 'error');
+      }
+      
+      const amount = Number(totalPaid);
+      if (!Number.isFinite(amount) || amount < 0) {
+        return showMessage('Total Paid Amount must be a non-negative number.', 'error');
+      }
+      
+      const tracks = Number(trackCount);
+      if (!Number.isInteger(tracks) || tracks < 1 || tracks > 1000) {
+        return showMessage('Track Count must be an integer between 1 and 1000.', 'error');
+      }
+      
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+        return showMessage('Date must be in YYYY-MM-DD format.', 'error');
+      }
+      
+      const { tokens, invalid, unique } = parseServices(servicesRaw);
+      if (unique.length === 0) {
+        return showMessage('Please provide at least one valid service code.', 'error');
+      }
+      if (invalid.length) {
+        return showMessage(`Invalid service codes: ${invalid.join(', ')}. Allowed: YT, DSP, PM, SM.`, 'error');
+      }
+      
+      if (!paymentMethod) {
+        return showMessage('Payment Method is required.', 'error');
+      }
+      if (!paymentPlatform) {
+        return showMessage('Please select a Payment Platform.', 'error');
+      }
+
+      // Confirm dialog
+      const ok = confirm('Are you sure you want to add this user to the system?');
+      if (!ok) return;
+
+      // Build payload
+      const payload = {
+        request: "add user",
+        email,
+        total_paid_usd: Number(amount.toFixed(2)),
+        track_count: tracks,
+        date,
+        services: unique,
+        services_raw: servicesRaw,
+        payment_method: paymentMethod,
+        payment_platform: paymentPlatform,
+        created_at_iso: new Date().toISOString()
+      };
+      try {
+        setLoading(true);
+
+const res = await fetch('/api/admin/add-user', {
+  method: 'POST',
+  credentials: 'include',          // <-- MUST be here (top-level), not inside headers
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload),
+  cache: 'no-store'
+});
+
+// If the server kicked us out mid-request with 401/403/redirect, bounce to login:
+if (!res.ok) {
+  if (res.status === 401 || res.status === 403) {
+    location.replace('/admin.html');
+    return;
+  }
+  showMessage(`Webhook request failed (HTTP ${res.status})`, 'error');
+  return;
+}
+
+const text = (await res.text()).trim();
+if (text === 'approved') {
+  showMessage('User added successfully! The account has been created and is ready to use.', 'success');
+  e.target.reset();
+} else {
+  showMessage(`Unexpected response: "${text}"`, 'error');
+}
+
+      } catch (err) {
+        showMessage('Network error occurred. Please check your connection and try again.', 'error');
+      } finally {
+        setLoading(false);
+      }
+    });
+  </script>
+</body>
+</html>
