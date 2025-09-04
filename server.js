@@ -244,21 +244,48 @@ app.post('/api/admin/logout', (req, res) => {
 /* =========================
  *  ADMIN API (guarded 401)
  * ========================= */
-async function forwardToMake(requestType, payload) {
-  // HMAC body (kept compatible with your current webhook logic)
-  const body = JSON.stringify({ request: requestType, ...payload });
-  const sig = crypto
-    .createHmac('sha256', process.env.MAKE_SIGNING_SECRET || 'dev')
-    .update(body)
-    .digest('hex');
+async function forwardToMake(requestType, payload, { timeoutMs = 10_000 } = {}) {
+  if (!process.env.MAKE_WEBHOOK_URL) {
+    throw new Error('Missing MAKE_WEBHOOK_URL in .env');
+  }
+  if (!process.env.MAKE_WEBHOOK_API_KEY) {
+    throw new Error('Missing MAKE_WEBHOOK_API_KEY in .env');
+  }
 
-  const r = await _fetch(process.env.MAKE_WEBHOOK_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Signature': sig },
-    body
-  });
-  const text = (await r.text()).trim();
-  return { ok: r.ok && text === 'approved', status: r.status, text };
+  const body = JSON.stringify({ request: requestType, ...payload });
+
+  // Optional: request timeout
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  let res, text;
+  try {
+    res = await _fetch(process.env.MAKE_WEBHOOK_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-make-apikey': process.env.MAKE_WEBHOOK_API_KEY, // <-- Make API Key auth
+      },
+      body,
+      signal: controller.signal,
+    });
+
+    text = (await res.text()).trim();
+  } catch (err) {
+    clearTimeout(timeout);
+    return {
+      ok: false,
+      status: 0,
+      text: `Network/timeout error: ${err && err.message ? err.message : String(err)}`
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+
+  // Keep your previous behavior: only "approved" + HTTP 200 counts as success
+const ok = res.status >= 200 && res.status < 300;
+
+  return { ok, status: res.status, text };
 }
 
 app.post('/api/admin/remove', requireAdminAPI, async (req, res) => {
@@ -698,7 +725,7 @@ app.patch('/tms-distro-tracks/:rowNumber', async (req, res) => {
 // Columns: A=Request, B=Description, C=Timestamp, (D is ignored), E=Status
 app.get('/admin-logs', async (req, res) => {
   try {
-    const range = 'AdminLogs!A1:E';
+    const range = 'Admin Logs!A1:E';
     const startRow = 1;
 
     const resp = await sheets.spreadsheets.values.get({
