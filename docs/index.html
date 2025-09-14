@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>TMS | Help Center</title>
+      <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/audioprotect/app.trendmysong.com/refs/heads/main/TMS%20W.png">
+    <style>
+        :root {
+            --bg-primary:#ffffff;--bg-secondary:#fafafa;--bg-tertiary:#f9fafb;--bg-accent:#f0f4ff;--bg-card:#ffffff;
+            --border-primary:#e5e7eb;--border-hover:#d1d5db;
+            --text-primary:#1f2937;--text-secondary:#6b7280;--text-tertiary:#9ca3af;
+            --accent-primary:#667eea;--accent-secondary:#764ba2;
+            --shadow:rgba(0,0,0,0.05);--shadow-hover:rgba(102,126,234,0.15)
+        }
+        [data-theme="dark"]{
+            --bg-primary:#1f2937;--bg-secondary:#111827;--bg-tertiary:#374151;--bg-accent:#1e293b;--bg-card:#374151;
+            --border-primary:#4b5563;--border-hover:#6b7280;
+            --text-primary:#f9fafb;--text-secondary:#d1d5db;--text-tertiary:#9ca3af;
+            --accent-primary:#818cf8;--accent-secondary:#a78bfa;
+            --shadow:rgba(0,0,0,0.3);--shadow-hover:rgba(129,140,248,0.3)
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;background:var(--bg-secondary);color:var(--text-primary);line-height:1.6;transition:all .3s ease}
+        .container{display:flex;min-height:100vh}
+        .sidebar{width:320px;background:var(--bg-primary);border-right:1px solid var(--border-primary);overflow-y:auto;box-shadow:0 0 10px var(--shadow);transition:all .3s ease}
+        .header{padding:24px;border-bottom:1px solid var(--border-primary);background:linear-gradient(135deg,var(--accent-primary) 0%,var(--accent-secondary) 100%);color:#fff;position:relative}
+        .header-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+        .logo{font-size:24px;font-weight:700;letter-spacing:-.5px}
+        .theme-toggle{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:6px;cursor:pointer;transition:all .2s ease;display:flex;align-items:center;justify-content:center}
+        .theme-toggle:hover{background:rgba(255,255,255,.3);transform:translateY(-1px)}
+        .theme-toggle svg{width:16px;height:16px;fill:#fff}
+        .tagline{font-size:13px;opacity:.9;font-weight:400}
+        .nav{padding:16px 0}
+        .nav-section{margin-bottom:8px}
+        .nav-title{padding:12px 24px 8px;font-size:14px;font-weight:600;color:var(--text-primary);text-transform:uppercase;letter-spacing:.5px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .2s ease}
+        .nav-title:hover{background:var(--bg-tertiary);color:var(--accent-primary)}
+        .nav-title.active{background:var(--bg-accent);color:var(--accent-primary);border-right:3px solid var(--accent-primary)}
+        .nav-icon{width:16px;height:16px;transition:transform .2s ease;fill:currentColor}
+        .nav-title.expanded .nav-icon{transform:rotate(90deg)}
+        .nav-items{max-height:0;overflow:hidden;transition:max-height .3s ease}
+        .nav-items.expanded{max-height:600px}
+        .nav-item{padding:8px 24px 8px 48px;font-size:14px;color:var(--text-secondary);cursor:pointer;transition:all .2s ease;border-left:3px solid transparent}
+        .nav-item:hover{background:var(--bg-tertiary);color:var(--text-primary);border-left-color:var(--border-hover)}
+        .nav-item.active{background:var(--bg-accent);color:var(--accent-primary);border-left-color:var(--accent-primary);font-weight:500}
+        .content{flex:1;background:var(--bg-primary);padding:40px 48px;overflow-y:visible;transition:all .3s ease}
+        .content-header{margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--border-primary)}
+        .breadcrumb{font-size:13px;color:var(--text-secondary);margin-bottom:16px}
+        .breadcrumb a{color:var(--accent-primary);text-decoration:none}
+        .content-title{font-size:32px;font-weight:700;color:var(--text-primary);margin-bottom:12px;line-height:1.2}
+        .content-subtitle{font-size:16px;color:var(--text-secondary);line-height:1.5}
+        .welcome-content{max-width:100%}
+        .feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;margin-top:32px}
+        .feature-card{padding:24px;border:1px solid var(--border-primary);border-radius:12px;background:var(--bg-card);transition:all .2s ease}
+        .feature-card:hover{border-color:var(--accent-primary);box-shadow:0 4px 12px var(--shadow-hover);transform:translateY(-2px)}
+        .feature-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--accent-primary) 0%,var(--accent-secondary) 100%);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+        .feature-title{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:8px}
+        .feature-description{font-size:14px;color:var(--text-secondary);line-height:1.5}
+        .cta-section{margin-top:48px;padding:32px;background:var(--bg-accent);border:1px solid var(--border-primary);border-radius:16px;text-align:center}
+        .cta-title{font-size:20px;font-weight:600;color:var(--text-primary);margin-bottom:12px}
+        .cta-buttons{display:flex;gap:16px;justify-content:center;margin-top:24px}
+        .btn{padding:12px 24px;border-radius:8px;font-weight:500;text-decoration:none;transition:all .2s ease;cursor:pointer;border:none;font-size:14px}
+        .btn-primary{background:linear-gradient(135deg,var(--accent-primary) 0%,var(--accent-secondary) 100%);color:#fff}
+        .btn-primary:hover{transform:translateY(-1px);box-shadow:0 4px 12px var(--shadow-hover)}
+        .btn-secondary{background:var(--bg-primary);color:var(--accent-primary);border:1px solid var(--accent-primary)}
+        .btn-secondary:hover{background:var(--accent-primary);color:#fff}
+        .sun-icon{display:none}.moon-icon{display:block}
+        [data-theme="dark"] .sun-icon{display:block}[data-theme="dark"] .moon-icon{display:none}
+
+        /* iframe container */
+        .doc-wrap{margin-top:24px;border:1px solid var(--border-primary);border-radius:12px;box-shadow:0 2px 6px var(--shadow);background:var(--bg-card);overflow:hidden}
+        .doc-frame{width:100%;min-height:70vh;border:0;display:none}
+        .doc-empty{padding:24px;color:var(--text-secondary)}
+        .doc-error{padding:16px 24px;background:#fee2e2;color:#991b1b;border-top:1px solid #fecaca;font-size:14px;display:none}
+
+        @media (max-width:768px){
+            .container{flex-direction:column}
+            .sidebar{width:100%;height:auto;position:static}
+            .content{padding:24px}
+            .cta-buttons{flex-direction:column;align-items:center}
+            .header-top{flex-direction:column;gap:8px}
+        }
+
+        .sidebar::-webkit-scrollbar,.content::-webkit-scrollbar{width:6px}
+        .sidebar::-webkit-scrollbar-track,.content::-webkit-scrollbar-track{background:var(--bg-tertiary)}
+        .sidebar::-webkit-scrollbar-thumb,.content::-webkit-scrollbar-thumb{background:var(--border-primary);border-radius:3px}
+        .sidebar::-webkit-scrollbar-thumb:hover,.content::-webkit-scrollbar-thumb:hover{background:var(--text-tertiary)}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="sidebar">
+        <div class="header">
+            <div class="header-top">
+              <div class="logo">
+  <a href="/">
+    <img src="https://raw.githubusercontent.com/audioprotect/app.trendmysong.com/refs/heads/main/TMS%20W.png" 
+         alt="TMS Logo" 
+         style="height:40px; width:auto;">
+  </a>
+</div>
+
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                    <svg class="sun-icon" viewBox="0 0 24 24"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"/></svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24"><path d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z"/></svg>
+                </button>
+            </div>
+            <div class="tagline">Trend My Song | Help Center</div>
+        </div>
+
+        <nav class="nav">
+            <div class="nav-section">
+                <div class="nav-title expanded" onclick="toggleSection(this)">
+                    Getting Started
+                    <svg class="nav-icon" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                </div>
+                <div class="nav-items expanded">
+                    <div class="nav-item active" onclick="setActive(this,'overview')">Overview</div>
+                    <div class="nav-item" onclick="setActive(this,'signup')">How to Sign Up</div>
+                    <div class="nav-item" onclick="setActive(this,'pricing')">Flexible Pricing Explained</div>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title" onclick="toggleSection(this)">
+                    Platform Guides
+                    <svg class="nav-icon" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                </div>
+                <div class="nav-items">
+                    <div class="nav-item" onclick="setActive(this,'dsp')">DSPs Distribution</div>
+                    <div class="nav-item" onclick="setActive(this,'youtube-id')">YouTube Content ID & Shorts</div>
+                    <div class="nav-item" onclick="setActive(this,'social-id')">Social Media Content ID</div>
+                    <div class="nav-item" onclick="setActive(this,'copyright')">Content ID Copyright Protection</div>
+                    <div class="nav-item" onclick="setActive(this,'marketing')">Music Marketing & Promotion</div>
+                    <div class="nav-item" onclick="setActive(this,'sync')">YouTube Sync Monetization</div>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title" onclick="toggleSection(this)">
+                    Enterprise Services
+                    <svg class="nav-icon" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                </div>
+                <div class="nav-items">
+                    <div class="nav-item" onclick="setActive(this,'labels')">For Record Labels</div>
+                    <div class="nav-item" onclick="setActive(this,'creators')">For Creators & Influencers</div>
+                    <div class="nav-item" onclick="setActive(this,'promotions')">For Promotions & Advertising</div>
+                    <div class="nav-item" onclick="setActive(this,'whitelabel')">For White Labels</div>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title" onclick="toggleSection(this)">
+                    Payments & Payouts
+                    <svg class="nav-icon" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                </div>
+                <div class="nav-items">
+                    <div class="nav-item" onclick="setActive(this,'payouts')">Payout Methods</div>
+                    <div class="nav-item" onclick="setActive(this,'payments')">Payment & Checkouts</div>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title" onclick="toggleSection(this)">
+                    FAQ & Support
+                    <svg class="nav-icon" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                </div>
+                <div class="nav-items">
+                    <div class="nav-item" onclick="setActive(this,'faq')">Comprehensive FAQ</div>
+                    <div class="nav-item" onclick="setActive(this,'support')">Contact Support</div>
+                    <div class="nav-item" onclick="setActive(this,'business')">Business Inquiries</div>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title" onclick="toggleSection(this)">
+                    Legal
+                    <svg class="nav-icon" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
+                </div>
+                <div class="nav-items">
+                    <div class="nav-item" onclick="setActive(this,'terms')">Terms of Service</div>
+                    <div class="nav-item" onclick="setActive(this,'privacy')">Privacy Policy</div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <main class="content">
+        <div class="content-header">
+            <div class="breadcrumb">
+                <a href="#" onclick="setActive(document.querySelector('.nav-item[onclick*=&quot;overview&quot;]'),'overview')">Home</a> / Getting Started / Overview
+            </div>
+            <h1 class="content-title">Welcome to Trend My Song</h1>
+            <p class="content-subtitle">Your comprehensive platform for music distribution, monetization, and marketing. Get started with our powerful suite of tools designed for artists, labels, and creators.</p>
+        </div>
+
+        <!-- Built-in "Overview" content -->
+       <!-- ===== Welcome / Features ===== -->
+<style>
+  .feature-section { margin: 40px 0; }
+  .feature-heading {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 14px;
+    color: var(--text-primary);
+  }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  .feature-card {
+    display: flex;
+    flex-direction: column;
+    padding: 18px;
+    border: 1px solid var(--border-primary);
+    border-radius: 12px;
+    background: var(--bg-card);
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,.08);
+    border-color: var(--border-hover);
+  }
+  .feature-title {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+  .feature-description {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+  .cta-section {
+    text-align: center;
+    margin-top: 40px;
+  }
+  .cta-title {
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+  }
+  .btn.inline {
+    display: inline-block;
+    padding: 12px 22px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .btn.inline:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  }
+</style>
+
+<div id="welcome" class="welcome-content">
+
+  <!-- Getting Started -->
+  <div class="feature-section">
+    <div class="feature-heading">Getting Started</div>
+    <div class="feature-grid">
+      <a class="feature-card" href="#signup">
+        <div class="feature-title">How to Sign Up</div>
+        <div class="feature-description">Step-by-step guide to creating your account and starting with TMS.</div>
+      </a>
+      <a class="feature-card" href="#pricing">
+        <div class="feature-title">Flexible Pricing Explained</div>
+        <div class="feature-description">Understand how our one-time pricing works and how to build your plan.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Platform Guides -->
+  <div class="feature-section">
+    <div class="feature-heading">Platform Guides</div>
+    <div class="feature-grid">
+      <a class="feature-card" href="#dsp">
+        <div class="feature-title">DSPs Distribution</div>
+        <div class="feature-description">Deliver your tracks to Spotify, Apple Music, Amazon Music and 200+ DSPs.</div>
+      </a>
+      <a class="feature-card" href="#youtube-id">
+        <div class="feature-title">YouTube Content ID & Shorts</div>
+        <div class="feature-description">Protect and monetize your music on YouTube long-form and Shorts.</div>
+      </a>
+      <a class="feature-card" href="#social-id">
+        <div class="feature-title">Social Media Content ID</div>
+        <div class="feature-description">Rights management and monetization on TikTok, Instagram, and Facebook.</div>
+      </a>
+      <a class="feature-card" href="#copyright">
+        <div class="feature-title">Content ID Copyright Protection</div>
+        <div class="feature-description">Register your music with fingerprint databases like ACRCloud & Audible Magic.</div>
+      </a>
+      <a class="feature-card" href="#marketing">
+        <div class="feature-title">Music Marketing & Promotion</div>
+        <div class="feature-description">Influencer campaigns, UGC funnels, and paid boosts for maximum reach.</div>
+      </a>
+      <a class="feature-card" href="#sync">
+        <div class="feature-title">YouTube Sync Monetization</div>
+        <div class="feature-description">Earn from YouTube even without YPP by redirecting revenue streams.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Enterprise Services -->
+  <div class="feature-section">
+    <div class="feature-heading">Enterprise Services</div>
+    <div class="feature-grid">
+      <a class="feature-card" href="#labels">
+        <div class="feature-title">For Record Labels</div>
+        <div class="feature-description">Bulk imports, sub-accounts, royalty dashboards, and artist payouts.</div>
+      </a>
+      <a class="feature-card" href="#creators">
+        <div class="feature-title">For Creators & Influencers</div>
+        <div class="feature-description">Join our network and earn by promoting music through campaigns.</div>
+      </a>
+      <a class="feature-card" href="#promotions">
+        <div class="feature-title">For Promotions & Advertising</div>
+        <div class="feature-description">Affiliate programs, sponsorships, and ad campaigns with TMS.</div>
+      </a>
+      <a class="feature-card" href="#whitelabel">
+        <div class="feature-title">For White Labels</div>
+        <div class="feature-description">Launch your own distribution platform powered by TMS backend.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Payments & Payouts -->
+  <div class="feature-section">
+    <div class="feature-heading">Payments & Payouts</div>
+    <div class="feature-grid">
+      <a class="feature-card" href="#payouts">
+        <div class="feature-title">Payout Methods</div>
+        <div class="feature-description">Withdraw via bank transfer, PayPal, or stablecoins with flexible limits.</div>
+      </a>
+      <a class="feature-card" href="#payments">
+        <div class="feature-title">Payment & Checkout</div>
+        <div class="feature-description">Secure one-time payments via Stripe, PayPal, or crypto invoice.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="cta-title">Ready to get started?</div>
+    <p style="color:var(--text-secondary);margin-bottom:12px">
+      Choose your plan and start your music journey with TMS today.
+    </p>
+    <a href="/pricing" class="btn inline">View Pricing</a>
+  </div>
+
+</div>
+
+
+        <!-- External page (iframe) container -->
+        <div id="docWrap" class="doc-wrap" style="display:none;">
+            <div class="doc-empty">Loading…</div>
+            <iframe id="docFrame" class="doc-frame" title="TMS Document"></iframe>
+            <div id="docError" class="doc-error">Error loading this page. Make sure the file exists under <code>/pages/</code> (e.g., <code>/pages/privacy.html</code>).</div>
+        </div>
+    </main>
+</div>
+<script>
+/* ---------- Theme ---------- */
+function toggleTheme(){
+  const cur = document.documentElement.getAttribute('data-theme');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+}
+function loadTheme(){
+  const saved = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+}
+
+/* ---------- Nav Sections ---------- */
+function toggleSection(el){
+  const items = el.nextElementSibling;
+  const open = el.classList.contains('expanded');
+  document.querySelectorAll('.nav-title.expanded').forEach(t=>{
+    if(t !== el){
+      t.classList.remove('expanded');
+      t.nextElementSibling.classList.remove('expanded');
+    }
+  });
+  if(open){ el.classList.remove('expanded'); items.classList.remove('expanded'); }
+  else { el.classList.add('expanded'); items.classList.add('expanded'); }
+}
+
+/* ---------- Page routing via iframe (static) ---------- */
+const PAGE_MAP = {
+  // Getting Started
+  signup:  {file:'signup.html',  title:'How to Sign Up',              sub:'Create your TMS account in minutes and start distributing your music to the world.', section:'Getting Started'},
+  pricing: {file:'pricing.html', title:'Flexible Pricing Explained',  sub:'Transparent plans that scale with your catalog and promotion needs.', section:'Getting Started'},
+
+  // Platform Guides
+  dsp: {file:'dsp.html', title:'DSPs Distribution', sub:'Deliver to Spotify, Apple Music, and 150+ DSPs with clean metadata.', section:'Platform Guides'},
+  'youtube-id': {file:'youtube-id.html', title:'YouTube Content ID & Shorts', sub:'Claim, monetize, and track matches across YouTube and Shorts.', section:'Platform Guides'},
+  'social-id':  {file:'social-id.html',  title:'Social Media Content ID',     sub:'Protect audio on Instagram, Facebook, and TikTok at scale.',   section:'Platform Guides'},
+  copyright:    {file:'copyright.html',  title:'Content ID Copyright Protection', sub:'Prevent misuse with automated fingerprinting and dispute flows.', section:'Platform Guides'},
+  marketing:    {file:'marketing.html',  title:'Music Marketing & Promotion', sub:'Influencer seeding, UGC funnels, and paid boosts that convert.', section:'Platform Guides'},
+  sync:         {file:'sync.html',       title:'YouTube Sync Monetization', sub:'Earn from compilations, edits, and sync placements compliantly.', section:'Platform Guides'},
+
+  // Enterprise
+  labels:     {file:'labels.html',     title:'For Record Labels',          sub:'Bulk tools, splits, catalogs, and analytics for rosters.', section:'Enterprise Services'},
+  creators:   {file:'creators.html',   title:'For Creators & Influencers', sub:'Whitelisted use, affiliate links, and revenue opportunities.', section:'Enterprise Services'},
+  promotions: {file:'promotions.html', title:'For Promotions & Advertising', sub:'Guaranteed views packages, briefs, and reporting.', section:'Enterprise Services'},
+  whitelabel: {file:'whitelabel.html', title:'For White Labels',           sub:'Run TMS under your brand with custom billing.', section:'Enterprise Services'},
+
+  // Payments
+  payouts:  {file:'payouts.html',  title:'Payout Methods',      sub:'Get paid locally and globally with flexible options.', section:'Payments & Payouts'},
+  payments: {file:'payments.html', title:'Payment & Checkouts', sub:'Cards, wallets, and crypto with fraud protection.',   section:'Payments & Payouts'},
+
+  // Support
+  faq:      {file:'faq.html',      title:'Comprehensive FAQ', sub:'Answers to common questions about distribution, ID, and payouts.', section:'FAQ & Support'},
+  support:  {file:'support.html',  title:'Contact Support',   sub:'We’re here to help—reach us via email or Telegram.',               section:'FAQ & Support'},
+  business: {file:'business.html', title:'Business Inquiries', sub:'Partnerships, enterprise, and reseller programs.',                section:'FAQ & Support'},
+
+  // Legal
+  terms:            {file:'terms.html',            title:'Terms of Service',  sub:'The rules of using Trend My Song.', section:'Legal'},
+  privacy:          {file:'privacy.html',          title:'Privacy Policy',    sub:'How we collect, use, and protect your data.', section:'Legal'},
+};
+
+function showWelcome(){
+  document.getElementById('welcome').style.display = 'block';
+  const wrap  = document.getElementById('docWrap');
+  const frame = document.getElementById('docFrame');
+  const err   = document.getElementById('docError');
+  wrap.style.display = 'none';
+  frame.src = 'about:blank';
+  frame.style.display = 'none';
+  err.style.display = 'none';
+}
+
+/* --- Iframe auto-height (same-origin) --- */
+function fitIframeToContent(frame){
+  if(!frame) return;
+
+  const doResize = () => {
+    try{
+      const doc  = frame.contentDocument || frame.contentWindow.document;
+      if(!doc) return;
+      const html = doc.documentElement;
+      const body = doc.body;
+
+      // Calculate the tallest measurement we may need
+      const newHeight = Math.max(
+        body.scrollHeight, body.offsetHeight,
+        html.clientHeight, html.scrollHeight, html.offsetHeight
+      );
+
+      // Set height (with a tiny buffer for rounding/layout thrash)
+      frame.style.height = (newHeight + 2) + 'px';
+    }catch(e){
+      // Cross-origin safeguard: silently ignore
+    }
+  };
+
+  // Try multiple times in case images/fonts load later
+  doResize();
+  setTimeout(doResize, 50);
+  setTimeout(doResize, 200);
+  setTimeout(doResize, 800);
+
+  // Observe size changes inside the iframe (same-origin)
+  try{
+    const doc  = frame.contentDocument || frame.contentWindow.document;
+    if(!doc) return;
+
+    // ResizeObserver on <html> and <body>
+    const ro = new ResizeObserver(() => doResize());
+    ro.observe(doc.documentElement);
+    ro.observe(doc.body);
+
+    // Re-fit when images load
+    Array.from(doc.images || []).forEach(img => {
+      img.addEventListener('load', doResize, { once:false, passive:true });
+    });
+
+    // Re-fit after fonts settle
+    if (doc.fonts && doc.fonts.ready) {
+      doc.fonts.ready.then(doResize);
+    }
+  }catch(e){
+    // If anything fails (e.g., cross-origin), we still tried above timeouts
+  }
+}
+
+function loadIframe(pageKey){
+  const meta  = PAGE_MAP[pageKey];
+  const wrap  = document.getElementById('docWrap');
+  const frame = document.getElementById('docFrame');
+  const empty = wrap.querySelector('.doc-empty');
+  const err   = document.getElementById('docError');
+
+  document.getElementById('welcome').style.display = 'none';
+  wrap.style.display = 'block';
+  empty.style.display = 'block';
+  frame.style.display = 'none';
+  err.style.display = 'none';
+
+  const url = 'pages/' + meta.file + '?v=' + Date.now();
+
+  let loaded = false;
+  frame.onload = function(){
+    loaded = true;
+    empty.style.display = 'none';
+    frame.style.display  = 'block';
+    err.style.display    = 'none';
+
+// NEW: auto-fit height
+  fitIframeToContent(frame);
+
+  };
+  frame.onerror = function(){
+    empty.style.display = 'none';
+    err.style.display   = 'block';
+    frame.style.display = 'none';
+  };
+  setTimeout(()=>{ if(!loaded && frame.src === url){ empty.style.display='none'; err.style.display='block'; }}, 4000);
+  frame.src = url;
+}
+
+/* ---------- Active / Breadcrumb / Titles ---------- */
+function setActive(el, page){
+  // Active classes
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+  document.querySelectorAll('.nav-title').forEach(t=>t.classList.remove('active'));
+
+  if(el && el.classList.contains('nav-item')){
+    el.classList.add('active');
+    const parentTitle = el.closest('.nav-section')?.querySelector('.nav-title');
+    if(parentTitle){ parentTitle.classList.add('active'); }
+  }
+
+  const breadcrumb = document.querySelector('.breadcrumb');
+  const titleEl    = document.querySelector('.content-title');
+  const subEl      = document.querySelector('.content-subtitle');
+
+  if(page === 'overview' || !PAGE_MAP[page]){
+    breadcrumb.innerHTML = '<a href="#overview">Home</a> / Getting Started / Overview';
+    titleEl.textContent  = 'Trend My Song | Help Center';
+    subEl.textContent    = 'Your comprehensive platform for music distribution, monetization, and marketing. Get started with our powerful suite of tools designed for artists, labels, and creators.';
+    showWelcome();
+    // update hash for consistency
+    if(location.hash !== '#overview'){ history.replaceState(null,'','#overview'); }
+    return;
+  }
+
+  const meta = PAGE_MAP[page];
+  breadcrumb.innerHTML = `<a href="#overview">Home</a> / ${meta.section} / ${meta.title}`;
+  titleEl.textContent = meta.title;
+  subEl.textContent   = meta.sub;
+
+  // Ensure parent section expanded
+  const sectionTitle = el ? el.closest('.nav-section')?.querySelector('.nav-title') : null;
+  if(sectionTitle && !sectionTitle.classList.contains('expanded')){
+    toggleSection(sectionTitle);
+  }
+
+  // Update hash & load
+  if(location.hash !== '#'+page){ history.replaceState(null,'','#'+page); }
+  loadIframe(page);
+}
+
+/* ---------- Hash routing ---------- */
+function routeFromHash(){
+  const key = (location.hash || '').slice(1);
+  if(key && PAGE_MAP[key]){
+    const target = document.querySelector(`.nav-item[onclick*="${key}"]`);
+    setActive(target || null, key);
+  }else{
+    const home = document.querySelector(`.nav-item[onclick*="overview"]`);
+    setActive(home, 'overview');
+  }
+}
+
+/* ---------- Init ---------- */
+window.addEventListener('DOMContentLoaded', ()=>{
+  loadTheme();
+  showWelcome();
+  routeFromHash();
+});
+
+// Make breadcrumb "Home" (#overview) work even if user types URL manually
+window.addEventListener('hashchange', routeFromHash);
+</script>
+
+</body>
+</html>
