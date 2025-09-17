@@ -513,6 +513,51 @@
     </div>
   </main>
 
+
+    
+<script>
+const emailInput = document.getElementById('email');
+let emailCheckTimeout = null;
+
+emailInput.addEventListener('input', () => {
+  clearTimeout(emailCheckTimeout);
+  // Debounce → wait 400ms after user stops typing
+  emailCheckTimeout = setTimeout(checkEmailExists, 400);
+});
+
+async function checkEmailExists() {
+  clearMessage();
+  const email = emailInput.value.trim();
+  if (!email || !validEmail(email)) {
+    submitBtn.disabled = false;
+    return;
+  }
+
+  try {
+    const res = await fetch('/check-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+      cache: 'no-store'
+    });
+
+    if (!res.ok) return; // ignore errors silently
+    const data = await res.json();
+
+    if (data.exists) {
+      showMessage('Error: This user already exists, no need to create an account, please proceed with an upgrade of limits.', 'error');
+      submitBtn.disabled = true;   // prevent submission
+    } else {
+      clearMessage();
+      submitBtn.disabled = false;  // allow submission
+    }
+  } catch (err) {
+    console.error('Error checking email', err);
+    submitBtn.disabled = false; // fail open
+  }
+}
+</script>
+
   <script>
     // ===== Config =====
 
