@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Auto Docs — Admin Panel</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cedarville+Cursive&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #fafafa;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --accent: #111827;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0 0 16px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    h2 {
+      margin: 24px 0 12px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="date"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 12px;
+    }
+
+    button.secondary {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    .preview {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px;
+      font-size: 13.5pt;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .sig {
+      font-family: "Cedarville Cursive", cursive;
+      font-size: 18pt;
+      display: inline-block;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <!-- Inputs -->
+    <div class="card">
+      <h1>Letter Agreement — Auto Docs</h1>
+      <div class="row">
+        <div>
+          <label for="effectiveDate">Effective Date</label>
+          <input id="effectiveDate" type="date" />
+        </div>
+        <div>
+          <label for="trackTitle">Track Title</label>
+          <input id="trackTitle" type="text" />
+        </div>
+      </div>
+
+      <h2>Label</h2>
+      <div class="row">
+        <div>
+          <label for="labelName">Label Name</label>
+          <input id="labelName" type="text" />
+        </div>
+        <div>
+          <label for="labelShort">Label Short</label>
+          <input id="labelShort" type="text" />
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label for="labelRepName">Label Representative Name</label>
+          <input id="labelRepName" type="text" />
+        </div>
+        <div>
+          <label for="labelRepTitle">Label Representative Title</label>
+          <input id="labelRepTitle" type="text" />
+        </div>
+      </div>
+
+      <h2>Artist</h2>
+      <div class="row">
+        <div>
+          <label for="artistLegal">Artist Legal Name</label>
+          <input id="artistLegal" type="text" />
+        </div>
+        <div>
+          <label for="artistStage">Artist Stage Name (p/k/a)</label>
+          <input id="artistStage" type="text" />
+        </div>
+      </div>
+
+      <h2>Publishing Administration</h2>
+      <label class="muted" style="display:flex;align-items:center;gap:8px;">
+        <input id="pubAdmin" type="checkbox" /> Applicable (default: No)
+      </label>
+
+      <button id="previewBtn" type="button">Generate Preview</button>
+      <button id="copyBtn" class="secondary" type="button">Copy Text</button>
+    </div>
+
+    <!-- Preview -->
+    <div class="card">
+      <h1>Preview</h1>
+      <div id="preview" class="preview"></div>
+    </div>
+  </div>
+
+  <script>
+    function todayISO() {
+      const now = new Date();
+      const tzDateStr = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Europe/Amsterdam',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(now);
+      return tzDateStr;
+    }
+
+    // Defaults
+    (function initDefaults() {
+      document.getElementById('effectiveDate').value = todayISO();
+      document.getElementById('labelName').value = 'Trend My Song';
+      document.getElementById('labelShort').value = 'TMS';
+      document.getElementById('pubAdmin').checked = false;
+    })();
+
+    function generateText() {
+      const vals = {
+        EFFECTIVE_DATE: document.getElementById('effectiveDate').value || todayISO(),
+        TRACK_TITLE: document.getElementById('trackTitle').value || 'Untitled',
+        LABEL_NAME: document.getElementById('labelName').value || 'Trend My Song',
+        LABEL_SHORT: document.getElementById('labelShort').value || 'TMS',
+        LABEL_REP_NAME: document.getElementById('labelRepName').value || '',
+        LABEL_REP_TITLE: document.getElementById('labelRepTitle').value || '',
+        ARTIST_LEGAL: document.getElementById('artistLegal').value || '',
+        ARTIST_STAGE: document.getElementById('artistStage').value || '',
+        PUB_ADMIN: document.getElementById('pubAdmin').checked
+      };
+
+      return `LETTER AGREEMENT
+
+This letter agreement ("Agreement") sets forth the material terms of the exclusive agreement between you and ${vals.LABEL_NAME} ("${vals.LABEL_SHORT}") ("${vals.LABEL_SHORT}", "we", "us" or "Label"), pursuant to which we engage your services throughout the Territory for the purpose of making records, and you agree to render such services to us. The parties intend to enter into a more formal agreement with respect to the subject matter hereof at a later date ("Long Form"). However, until such time as a Long Form is completed, this Agreement, including, without limitation, all promises and covenants contained in Exhibit A, attached hereto and incorporated herein by this reference, governs the relationship between the parties hereto with respect to the subject matter hereof and is binding.
+
+1. Territory:
+Worldwide.
+
+2. Recording Commitment:
+You shall deliver to us one (1) master recording titled < "${vals.TRACK_TITLE}" ("Master") within thirty (30) days of the Effective Date. The Master being no less than sixty (60) seconds in length. Any Master delivered that is less than sixty (60) seconds in length shall not be counted towards fulfillment of your Recording Commitment unless specifically approved by us in writing. You shall deliver each Master with a complete split sheet detailing all writers, producers, and other contributors, along with their respective ownership percentages.
+
+3. Release Commitment:
+The Label shall use commercially reasonable efforts to release the Master(s) within a timeframe that aligns with its overall release strategy and market readiness. Notwithstanding the foregoing, the Label retains sole discretion over the timing, marketing, and method of release of the Master(s), ensuring such release occurs within a reasonable period following acceptance of the final Master. The Artist acknowledges that any release schedule is subject to change based on market conditions, strategic considerations, and unforeseen circumstances, and the Label shall not be held liable for any delay in the release of the Master(s).
+
+4. Royalties:
+We will pay you Fifty Percent (50%) of our Net Profits in connection with the Master(s) ("Royalty") after recoupment of the Marketing Fund. 
+
+"Net Profits" shall mean the gross fees, royalties and all other consideration actually received by us which are solely, directly and identifiably attributable to the exploitation of the Master(s), less the following: (i) distribution expenses (including, without limitation, distributor fees, platform fees, credit card fees, ingesting/correction fees), (ii) reasonable reserves for returns, refunds, rebates, credits and exchanges, (iii) any sales, use, value added or other taxes, (iv) all costs incurred and paid by us in connection with the production, marketing, promotion or other exploitation of the Master(s), including manufacturing, recording, mixing, mastering, artwork, remixes, and fees paid to third-party producers or performers, (v) costs of copyright registration, licensing agents, sub-publishers, and any collection society charges. Net Profits shall expressly exclude: (x) the "label share" of SoundExchange and/or neighboring rights income (we will claim this for ourselves; you may claim the "performer’s share"), (y) any income collected by us via the YouTube Partner Program.
+
+5. Rights:
+We (and our designees) will have the sole and exclusive right to exploit the Master(s) (and any derivative versions, such as remixes) together with all artwork, videos, and related materials in any manner and all media throughout the Territory for the life of copyright (including all renewals and extensions thereof). This includes, without limitation: streaming, downloads, physical sales, synchronization, compilations, licensing of performance rights, and sublicensing to third parties; perpetual, worldwide synchronization and compilation licenses; promotional uses on social media and third-party apps (TikTok, Twitch, etc.).
+
+${vals.PUB_ADMIN ? `Publishing Administration (if applicable):
+We (and our designees) shall have the sole and exclusive right to administer and exploit the Compositions embodied in the Master(s) during the License Period (life of copyright), including collection of mechanical royalties, performance royalties, synchronization income, licensing, and sub-publishing. You shall retain ownership of the Compositions but grant us 100% administration rights.` : ``}
+
+6. Accounting:
+Royalty statements will be provided on a quarterly basis, within sixty (60) days after each quarterly accounting period. You may audit our books at your own expense, no more than once per year, upon reasonable notice. Any royalty statement not disputed within two (2) years shall be deemed final.
+
+Signatures
+
+${vals.LABEL_NAME}
+Name: ${vals.LABEL_REP_NAME}
+Title: ${vals.LABEL_REP_TITLE}
+Signature:   <span class="sig">${vals.LABEL_REP_NAME}</span>
+Date: ${vals.EFFECTIVE_DATE}
+
+Artist
+Name: ${vals.ARTIST_LEGAL}
+Stage Name (p/k/a): ${vals.ARTIST_STAGE}
+Signature:   <span class="sig">${vals.ARTIST_LEGAL}</span>
+Date: ${vals.EFFECTIVE_DATE}`;
+    }
+
+    function renderPreview() {
+      document.getElementById('preview').innerHTML = generateText();
+    }
+
+    function copyText() {
+      const text = document.getElementById('preview').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Agreement copied to clipboard!");
+      });
+    }
+
+    document.getElementById('previewBtn').addEventListener('click', renderPreview);
+    document.getElementById('copyBtn').addEventListener('click', copyText);
+
+    // auto-preview on load
+    renderPreview();
+  </script>
+</body>
+</html>
