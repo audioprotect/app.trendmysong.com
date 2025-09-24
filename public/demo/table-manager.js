@@ -1,10 +1,10 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
   // Check for localStorage availability and get credentials
   let currentUsername, currentKey;
   let useLocalStorage = false;
-  
+
   try {
-    if (typeof(Storage) !== "undefined" && localStorage) {
+    if (typeof (Storage) !== "undefined" && localStorage) {
       currentUsername = localStorage.getItem('username');
       currentKey = localStorage.getItem('key');
       useLocalStorage = true;
@@ -12,32 +12,44 @@ document.addEventListener("DOMContentLoaded", function() {
   } catch (e) {
     console.log('localStorage not available, using demo mode');
   }
-  
-  
+
+  // Fallback to demo data if localStorage is not available
+  if (!useLocalStorage || !currentUsername || !currentKey) {
+    currentUsername = 'demo_user';
+    currentKey = 'demo_key';
+  }
+
   const dataContainer = document.getElementById('dataContainer');
   const searchInput = document.getElementById('searchInput');
   const pageInfo = document.getElementById('pageInfo');
-  
+
   let allData = [];
   let filteredData = [];
   let currentSort = 'newest';
-  
+
   const rowsPerPage = 8;
   let currentPage = 1;
   let totalPages = 1;
 
+  // No demo data - rely on backend only
 
   function getStatusClass(status) {
     const statusMap = {
       'Removed': 'status-removed',
-      'In Review': 'status-review', 
+      'In Review': 'status-review',
       'In Progress': 'status-progress',
       'Copyrighted': 'status-copyrighted',
       'Approved': 'status-approved'
     };
     return statusMap[status] || '';
   }
-  
+
+  function displayStatus(status) {
+    if (status === "Copyrighted") return "Approved";
+    return status || "N/A";
+  }
+
+
   function getTypeClass(type) {
     const typeMap = {
       'Original Track': 'type-original',
@@ -46,14 +58,14 @@ document.addEventListener("DOMContentLoaded", function() {
     };
     return typeMap[type] || '';
   }
-  
+
   function formatDate(dateString) {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', { 
-        year: 'short', 
-        month: 'short', 
-        day: 'numeric' 
+      return date.toLocaleDateString('en-US', {
+        year: 'short',
+        month: 'short',
+        day: 'numeric'
       });
     } catch {
       return dateString || 'N/A';
@@ -67,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function() {
       <div class="header-cell">Artist</div>
       <div class="header-cell">Album</div>
       <div class="header-cell">Release Date</div>
-      <div class="header-cell">Track Type</div>
+      <div class="header-cell">Artwork</div>
       <div class="header-cell">Audio</div>
       <div class="header-cell">Status</div>
     </div>
@@ -85,15 +97,15 @@ document.addEventListener("DOMContentLoaded", function() {
     const startIndex = (page - 1) * rowsPerPage;
     const endIndex = page * rowsPerPage;
     const currentPageData = data.slice(startIndex, endIndex);
-    
+
     totalPages = Math.ceil(data.length / rowsPerPage);
 
     let tableHTML = tableHeader;
-    
+
     currentPageData.forEach(row => {
       // Ensure row has at least 9 elements
       const safeRow = Array.from({ length: 9 }, (_, i) => row[i] || 'N/A');
-      
+
       tableHTML += `
         <div class="table-rows">
           <div class="table-cell">
@@ -112,16 +124,24 @@ document.addEventListener("DOMContentLoaded", function() {
             ${formatDate(safeRow[3])}
           </div>
           <div class="table-cell">
-            <span class="image-cover">${safeRow[8]}</span>
+               <button class="play-button" onclick="openArtwork('${safeRow[8]}')">
+              Open Artwork
+            </button>
           </div>
           <div class="table-cell">
             <button class="play-button" onclick="playAudio('${safeRow[7]}')">
-              ▶ Play
+              Play Audio
             </button>
           </div>
-          <div class="table-cell"> 
-            <span class="${row[0] === 'Removed' ? 'red' : row[0] === 'In Review' ? 'blue' : row[0] === 'In Progress' ? 'yellow' : row[0] === 'Copyrighted' ? 'green' : ''}">${row[0] || 'N/A'}</span></div>
-          </div>
+          <div class="table-cell">
+          <span class="${
+            row[0] === 'Removed' ? 'red' 
+            : row[0] === 'In Review' ? 'blue' 
+            : row[0] === 'In Progress' ? 'yellow' 
+            : row[0] === 'Copyrighted' ? 'green' 
+            : ''
+          }">${displayStatus(row[0])}</span>
+        </div>
         </div>
       `;
     });
@@ -130,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function() {
     renderPaginationControls(data);
     updatePageInfo(data, page);
   }
-  
+
   function updatePageInfo(data, page) {
     if (pageInfo) {
       const startIndex = (page - 1) * rowsPerPage + 1;
@@ -142,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
   function renderPaginationControls(data) {
     const paginationContainer = document.getElementById('paginationContainer');
     if (!paginationContainer) return;
-    
+
     totalPages = Math.ceil(data.length / rowsPerPage);
 
     if (totalPages <= 1) {
@@ -199,15 +219,15 @@ document.addEventListener("DOMContentLoaded", function() {
     return [...data].sort((a, b) => {
       const dateA = new Date(a[3]);
       const dateB = new Date(b[3]);
-      
+
       // Handle invalid dates
       const validDateA = !isNaN(dateA.getTime());
       const validDateB = !isNaN(dateB.getTime());
-      
+
       if (!validDateA && !validDateB) return 0;
       if (!validDateA) return 1;
       if (!validDateB) return -1;
-      
+
       return ascending ? dateA - dateB : dateB - dateA;
     });
   }
@@ -218,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function() {
     allSortButtons.forEach(btn => {
       btn.classList.remove('active');
     });
-    
+
     // Add active class to the correct button
     if (activeSort === 'oldest') {
       const oldToNewBtn = document.getElementById('sortOldToNew');
@@ -235,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function filterAndRender() {
     const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
-    
+
     if (query === '') {
       filteredData = [...allData];
     } else {
@@ -246,14 +266,14 @@ document.addEventListener("DOMContentLoaded", function() {
         return title.includes(query) || artist.includes(query) || album.includes(query);
       });
     }
-    
+
     // Apply current sort
     if (currentSort === 'oldest') {
       filteredData = sortByDate(filteredData, true);
     } else {
       filteredData = sortByDate(filteredData, false);
     }
-    
+
     currentPage = 1;
     renderTable(filteredData, currentPage);
   }
@@ -261,9 +281,9 @@ document.addEventListener("DOMContentLoaded", function() {
   // Event listeners
   const sortOldToNewBtn = document.getElementById('sortOldToNew');
   const sortNewToOldBtn = document.getElementById('sortNewToOld');
-  
+
   if (sortOldToNewBtn) {
-    sortOldToNewBtn.addEventListener('click', function() {
+    sortOldToNewBtn.addEventListener('click', function () {
       console.log('Sort: Oldest to Newest clicked');
       currentSort = 'oldest';
       updateSortButtons('oldest');
@@ -272,7 +292,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   if (sortNewToOldBtn) {
-    sortNewToOldBtn.addEventListener('click', function() {
+    sortNewToOldBtn.addEventListener('click', function () {
       console.log('Sort: Newest to Oldest clicked');
       currentSort = 'newest';
       updateSortButtons('newest');
@@ -285,7 +305,7 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 
   // Global functions for audio playback and pagination
-  window.playAudio = function(audioUrl) {
+  window.playAudio = function (audioUrl) {
     if (audioUrl && audioUrl !== 'N/A') {
       window.open(audioUrl, '_blank');
     } else {
@@ -293,18 +313,31 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   };
 
+window.openArtwork = function (artworkUrl) {
+  if (artworkUrl && artworkUrl !== 'N/A' && artworkUrl !== 'Default Image') {
+    window.open(artworkUrl, '_blank');
+  } else {
+    alert('Artwork file not available');
+  }
+};
+
   window.changePage = changePage;
 
   // Fast data fetching function
   async function fetchData() {
+    if (!useLocalStorage || !currentUsername || !currentKey) {
+      dataContainer.innerHTML = '<div class="no-data">Please log in to view your tracks.</div>';
+      return;
+    }
+
     try {
       // Show minimal loading state
       dataContainer.innerHTML = '<div class="loading">Loading...</div>';
-      
+
       console.log('Fetching data from backend...');
-      
+
       const response = await fetch(`/get-sheet-data?sheetName=${encodeURIComponent(currentUsername)}&key=${encodeURIComponent(currentKey)}`);
-      
+
       if (!response.ok) {
         if (response.status === 401 || response.status === 403) {
           throw new Error('Authentication failed. Please log in again.');
@@ -316,26 +349,26 @@ document.addEventListener("DOMContentLoaded", function() {
           throw new Error(`Request failed with status ${response.status}`);
         }
       }
-      
+
       const data = await response.json();
-      
+
       if (!data || !data.data || !Array.isArray(data.data)) {
         throw new Error('Invalid data format received');
       }
 
       allData = data.data;
       filteredData = [...allData];
-      
+
       console.log('Data loaded:', allData.length, 'tracks');
-      
+
       // Apply default sort and render immediately
       filteredData = sortByDate(filteredData, false);
       updateSortButtons('newest');
       renderTable(filteredData, currentPage);
-      
+
     } catch (error) {
       console.error('Fetch error:', error);
-      
+
       dataContainer.innerHTML = `
         <div class="no-data">
           <h3>Unable to Load Data</h3>
