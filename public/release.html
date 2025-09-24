@@ -83,42 +83,30 @@
 
   <!-- Main content -->
   <main class="flex-1 p-8 overflow-auto p-8 ml-80">
-    
-    <div id="embedContainer">
-        <iframe 
-            id="dynamicEmbed" 
-            style="width:100%; height:800px;" 
-            src="" 
-            frameborder="0" 
-            allowfullscreen>
-        </iframe>
-    </div>     
-      <form action="#">
-        <div class="form-input">
-            <button class="search-btn" type="submit"style="display: none;"><i class='bx bx-search'style="display: none;"></i></button>
-        </div>
-    </form>
+  <div 
+    id="filloutEmbed" 
+    style="width:100%;height:400px;" 
+    data-fillout-id="nNc1NRChpyus" 
+    data-fillout-embed-type="standard" 
+    data-fillout-inherit-parameters 
+    data-fillout-dynamic-resize
+></div>      
+
+<script>
+    // Retrieve the "key" value from localStorage
+    const key = localStorage.getItem("key");
+
+    // If "key" exists in localStorage, update the data-fillout-id attribute
+    if (key) {
+        const filloutEmbed = document.getElementById("filloutEmbed");
+        filloutEmbed.setAttribute("data-fillout-id", `nNc1NRChpyus?login_key=${key}`);
+    }
+</script>
+
+<script src="https://server.fillout.com/embed/v1/"></script>  
   </main>
 
 <script>
-    // Fetch core value and update embed src
-async function fetchCore() {
-    try {
-        const response = await fetch('/current-core');
-        if (!response.ok) throw new Error('Failed to fetch the core value.');
-
-        const data = await response.json();
-        const dynamicEmbed = document.getElementById('dynamicEmbed');
-        if (dynamicEmbed) {
-            // Assuming dynamicEmbed is iframe or embed
-            dynamicEmbed.src = data.core || '';
-        } else {
-            console.warn('Element with id "dynamicEmbed" not found.');
-        }
-    } catch (error) {
-        console.error('Error fetching core value:', error);
-    }
-}
 
 // Fetch summary data and update UI accordingly
 async function fetchSummary() {
@@ -175,8 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const isMobile = window.innerWidth <= 767;
-    if (isMobile && !window.location.pathname.includes("mobile.html")) {
-      window.location.href = "/mobile.html";
+    if (isMobile && !window.location.pathname.includes("/mobile")) {
+      window.location.href = "/mobile";
     }
   });
 </script>
